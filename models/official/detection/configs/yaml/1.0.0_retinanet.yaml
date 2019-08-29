@@ -4,4 +4,4 @@ train:
   learning_rate:
     init_learning_rate: 0.08
     learning_rate_levels: [0.008, 0.0008]
-    learning_rate_steps: [20000, 10000]
+    learning_rate_steps: [20000, 100000]
