@@ -154,6 +154,8 @@ def main(argv):
     save_config(params, params.model_dir)
     executor.prepare_evaluation()
     num_cycles = int(params.train.total_steps / params.eval.num_steps_per_eval)
+
+    # FIXME: this doesn't work with resuming
     for cycle in range(num_cycles):
       tf.logging.info('Start training cycle %d.' % cycle)
       current_cycle_last_train_step = ((cycle + 1)
