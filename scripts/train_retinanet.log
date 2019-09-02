@@ -1,0 +1,200 @@
+#!/bin/bash
+
+
+export STORAGE_BUCKET=gs://ap_tpu_storage
+
+sudo apt-get install -y python-tk
+pip install Cython matplotlib opencv-python-headless pyyaml Pillow
+pip install 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
+
+sudo /sbin/sysctl \
+       -w net.ipv4.tcp_keepalive_time=60 \
+       net.ipv4.tcp_keepalive_intvl=60 \
+       net.ipv4.tcp_keepalive_probes=5
+
+export PYTHONPATH="$PYTHONPATH:/usr/share/tpu/models"
+
+export MODEL_DIR=${STORAGE_BUCKET}/retinanet-train-eval
+export RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
+export TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/train-*
+export EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/validation-*
+export VAL_JSON_FILE=${STORAGE_BUCKET}/converted/coco_validation.json
+export EVAL_SAMPLES=5000
+export NUM_STEPS_PER_EVAL=1000
+
+echo /usr/share/tpu/models/official/detection/main.py \
+--use_tpu=True \
+--tpu="${TPU_NAME?}" \
+--num_cores=8 \
+--model_dir="${MODEL_DIR?}" \
+--mode="train_and_eval" \
+--params_override="{ type: retinanet, train: { checkpoint: { path: ${RESNET_CHECKPOINT?}, prefix: resnet50/ }, train_file_pattern: ${TRAIN_FILE_PATTERN?} }, eval: { val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?}, eval_samples: ${EVAL_SAMPLES?}, num_steps_per_eval: ${NUM_STEPS_PER_EVAL?} } }"
+
+python /usr/share/tpu/models/official/detection/main.py \
+--use_tpu=True \
+--tpu="${TPU_NAME?}" \
+--num_cores=8 \
+--model_dir="${MODEL_DIR?}" \
+--mode="train_and_eval" \
+--params_override="{ type: retinanet, train: { checkpoint: { path: ${RESNET_CHECKPOINT?}, prefix: resnet50/ }, train_file_pattern: ${TRAIN_FILE_PATTERN?} }, eval: { val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?}, eval_samples: ${EVAL_SAMPLES?}, num_steps_per_eval: ${NUM_STEPS_PER_EVAL?} } }"
+
+
+
+
+
+W0829 12:25:43.586091 140564926195136 deprecation.py:506] From /usr/local/lib/python2.7/dist-packages/tensorflow/python/ops/init_ops.py:1251: calling __init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+W0829 12:25:50.152959 140564926195136 deprecation_wrapper.py:119] From /usr/share/tpu/models/official/detection/modeling/losses.py:442: The name tf.losses.huber_loss is deprecated. Please use tf.compat.v1.losses.huber_loss instead.
+
+W0829 12:25:50.153245 140564926195136 deprecation_wrapper.py:119] From /usr/share/tpu/models/official/detection/modeling/losses.py:447: The name tf.losses.Reduction is deprecated. Please use tf.compat.v1.losses.Reduction instead.
+
+I0829 12:25:51.021574 140564926195136 estimator.py:1147] Done calling model_fn.
+I0829 12:25:51.026041 140564926195136 tpu_estimator.py:499] TPU job name worker
+I0829 12:25:52.620796 140564926195136 monitored_session.py:240] Graph was finalized.
+W0829 12:25:52.621664 140564926195136 deprecation.py:323] From /usr/local/lib/python2.7/dist-packages/tensorflow/python/training/saver.py:1276: checkpoint_exists (from tensorflow.python.training.checkpoint_management) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use standard file APIs to check for files with this prefix.
+I0829 12:25:52.673778 140564926195136 saver.py:1280] Restoring parameters from gs://ap_tpu_storage/retinanet-train-eval/model.ckpt-1000
+I0829 12:25:57.798074 140564926195136 session_manager.py:500] Running local_init_op.
+I0829 12:25:58.264249 140564926195136 session_manager.py:502] Done running local_init_op.
+W0829 12:25:58.925739 140564926195136 deprecation.py:323] From /usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/tpu/tpu_estimator.py:808: load (from tensorflow.python.ops.variables) is deprecated and will be removed in a future version.
+Instructions for updating:
+Prefer Variable.assign which has equivalent behavior in 2.X.
+I0829 12:25:59.399880 140564926195136 tpu_estimator.py:557] Init TPU system
+I0829 12:26:06.790250 140564926195136 tpu_estimator.py:566] Initialized TPU in 7 seconds
+I0829 12:26:06.791537 140563387242240 tpu_estimator.py:514] Starting infeed thread controller.
+I0829 12:26:06.792031 140563378849536 tpu_estimator.py:533] Starting outfeed thread controller.
+I0829 12:26:08.520896 140564926195136 util.py:98] Initialized dataset iterators in 1 seconds
+I0829 12:26:09.018450 140564926195136 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 12:26:09.019155 140564926195136 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 12:26:09.020276 140563378849536 tpu_estimator.py:275] Outfeed finished for iteration (0, 0)
+2019-08-29 12:26:54.275500: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567081614.275359093","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+2019-08-29 12:26:54.275509: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567081614.275335374","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+3236653647fa368 is not found. Possibly, this master has restarted.
+I0829 12:46:21.949305 140259594257856 monitored_session.py:240] Graph was finalized.
+I0829 12:46:22.002645 140259594257856 saver.py:1280] Restoring parameters from gs://ap_tpu_storage/retinanet-train-eval/model.ckpt-1000
+I0829 12:46:26.819664 140259594257856 session_manager.py:500] Running local_init_op.
+I0829 12:46:27.365154 140259594257856 session_manager.py:502] Done running local_init_op.
+I0829 12:46:28.681478 140259594257856 tpu_estimator.py:557] Init TPU system
+I0829 12:46:34.686101 140259594257856 tpu_estimator.py:566] Initialized TPU in 6 seconds
+I0829 12:46:34.686903 140257123104512 tpu_estimator.py:514] Starting infeed thread controller.
+I0829 12:46:34.687511 140257097926400 tpu_estimator.py:533] Starting outfeed thread controller.
+I0829 12:46:36.347680 140259594257856 util.py:98] Initialized dataset iterators in 1 seconds
+I0829 12:46:36.899254 140259594257856 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 12:46:36.899594 140259594257856 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 12:46:36.901022 140257097926400 tpu_estimator.py:275] Outfeed finished for iteration (0, 0)
+2019-08-29 12:46:48.904402: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567082808.904246788","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+2019-08-29 12:46:48.904403: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567082808.904268960","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+E0829 12:47:09.102963 140257123104512 error_handling.py:70] Error recorded from infeed: Session 37fa25603b873305 is not found.
+I0829 12:47:09.103780 140259594257856 monitored_session.py:1262] An error was raised. This may be due to a preemption in a connected worker or parameter server. The current session will be closed and a new session will be created. This error may also occur due to a gRPC failure caused by high memory or network bandwidth usage in the parameter servers. If this error occurs repeatedly, try increasing the number of parameter servers assigned to the job. Error: Session 37fa25603b873305 is not found.
+W0829 12:47:09.105187 140259594257856 monitored_session.py:1164] An error occurred when attempting to close the session. This may be due to a preemption in a connected worker or parameter server. Error: Session37fa25603b873305 is not found. Possibly, this master has restarted.
+3236653647fa368 is not found. Possibly, this master has restarted.
+I0829 12:46:21.949305 140259594257856 monitored_session.py:240] Graph was finalized.
+I0829 12:46:22.002645 140259594257856 saver.py:1280] Restoring parameters from gs://ap_tpu_storage/retinanet-train-eval/model.ckpt-1000
+I0829 12:46:26.819664 140259594257856 session_manager.py:500] Running local_init_op.
+I0829 12:46:27.365154 140259594257856 session_manager.py:502] Done running local_init_op.
+I0829 12:46:28.681478 140259594257856 tpu_estimator.py:557] Init TPU system
+I0829 12:46:34.686101 140259594257856 tpu_estimator.py:566] Initialized TPU in 6 seconds
+I0829 12:46:34.686903 140257123104512 tpu_estimator.py:514] Starting infeed thread controller.
+I0829 12:46:34.687511 140257097926400 tpu_estimator.py:533] Starting outfeed thread controller.
+I0829 12:46:36.347680 140259594257856 util.py:98] Initialized dataset iterators in 1 seconds
+I0829 12:46:36.899254 140259594257856 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 12:46:36.899594 140259594257856 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 12:46:36.901022 140257097926400 tpu_estimator.py:275] Outfeed finished for iteration (0, 0)
+2019-08-29 12:46:48.904402: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567082808.904246788","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+2019-08-29 12:46:48.904403: W tensorflow/core/distributed_runtime/rpc/grpc_remote_master.cc:157] RPC failed with status = "Unavailable: Socket closed" and grpc_error_string = "{"created":"@1567082808.904268960","description":"Error received from peer","file":"external/grpc/src/core/lib/surface/call.cc","file_line":1039,"grpc_message":"Socket closed","grpc_status":14}", maybe retrying the RPC
+E0829 12:47:09.102963 140257123104512 error_handling.py:70] Error recorded from infeed: Session 37fa25603b873305 is not found.
+I0829 12:47:09.103780 140259594257856 monitored_session.py:1262] An error was raised. This may be due to a preemption in a connected worker or parameter server. The current session will be closed and a new session will be created. This error may also occur due to a gRPC failure caused by high memory or network bandwidth usage in the parameter servers. If this error occurs repeatedly, try increasing the number of parameter servers assigned to the job. Error: Session 37fa25603b873305 is not found.
+W0829 12:47:09.105187 140259594257856 monitored_session.py:1164] An error occurred when attempting to close the session. This may be due to a preemption in a connected worker or parameter server. Error: Session37fa25603b873305 is not found. Possibly, this master has restarted.
+I0829 12:47:09.105458 140259594257856 monitored_session.py:240] Graph was finalized.
+I0829 12:47:09.151313 140259594257856 saver.py:1280] Restoring parameters from gs://ap_tpu_storage/retinanet-train-eval/model.ckpt-1000
+I0829 12:47:13.869684 140259594257856 session_manager.py:500] Running local_init_op.
+I0829 12:47:14.371824 140259594257856 session_manager.py:502] Done running local_init_op.
+I0829 12:47:15.726409 140259594257856 tpu_estimator.py:557] Init TPU system
+^CI0829 12:47:23.786992 140259594257856 error_handling.py:96] prediction_loop marked as finished
+W0829 12:47:23.787261 140259594257856 error_handling.py:130] Reraising captured error
+Traceback (most recent call last):
+  File "/usr/share/tpu/models/official/detection/main.py", line 161, in <module>
+    tf.app.run(main)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow/python/platform/app.py", line 40, in run
+    _run(main=main, argv=argv, flags_parser=_parse_flags_tolerate_undef)
+  File "/usr/local/lib/python2.7/dist-packages/absl/app.py", line 300, in run
+    _run_main(main, args)
+  File "/usr/local/lib/python2.7/dist-packages/absl/app.py", line 251, in _run_main
+    sys.exit(main(argv))
+  File "/usr/share/tpu/models/official/detection/main.py", line 154, in main
+    params.eval.eval_samples // params.predict.predict_batch_size)
+  File "/usr/share/tpu/models/official/detection/executor/tpu_executor.py", line 114, in evaluate
+    outputs = predictor.next()
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/tpu/tpu_estimator.py", line 2919, in predict
+    rendezvous.raise_errors()
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/tpu/error_handling.py", line 131, in raise_errors
+    six.reraise(typ, value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/tpu/error_handling.py", line 104, in catch_errors
+    yield
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/tpu/tpu_estimator.py", line 529, in _run_infeed
+    session.run(self._enqueue_ops)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow/python/client/session.py", line 950, in run
+    run_metadata_ptr)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow/python/client/session.py", line 1173, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow/python/client/session.py", line 1350, in _do_run
+    run_metadata)
+  File "/usr/local/lib/python2.7/dist-packages/tensorflow/python/client/session.py", line 1370, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors_impl.AbortedError: Session 37fa25603b873305 is not found.
+palvelev@palvelev:~$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I0829 17:04:13.982973 140473453848000 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 17:04:14.544390 140473453848000 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 17:04:14.544661 140473453848000 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 17:04:15.895951 140473453848000 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 17:04:15.896214 140473453848000 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 17:04:16.413825 140473453848000 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 17:04:16.414086 140473453848000 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+I0829 17:04:17.054797 140473453848000 tpu_estimator.py:590] Enqueue next (1) batch(es) of data to infeed.
+I0829 17:04:17.055058 140473453848000 tpu_estimator.py:594] Dequeue next (1) batch(es) of data from outfeed.
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=7.60s).
+Accumulating evaluation results...
+DONE (t=1.34s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.047
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.063
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.051
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.099
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.083
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.102
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.104
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.104
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = -1.000
+I0829 17:04:36.911662 140473453848000 error_handling.py:96] prediction_loop marked as finished
+E0829 17:04:37.102343 140471809603328 error_handling.py:70] Error recorded from infeed: Step was cancelled by an explicit call to `Session::Close()`.
+palvelev@retinav3:~$
+palvelev@retinav3:~$
+palvelev@retinav3:~$ echo /usr/share/tpu/models/official/detection/main.py --use_tpu=True --tpu="${TPU_NAME?}" --num_cores=8 --model_dir="${MODEL_DIR?}" --mode="train_and_eval" --params_override="{ type: retinan
+et, train: { checkpoint: { path: ${RESNET_CHECKPOINT?}, prefix: resnet50/ }, train_file_pattern: ${TRAIN_FILE_PATTERN?} }, eval: { val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?}, eval
+_samples: ${EVAL_SAMPLES?}, num_steps_per_eval: ${NUM_STEPS_PER_EVAL?} } }"
+/usr/share/tpu/models/official/detection/main.py --use_tpu=True --tpu=retinav3 --num_cores=8 --model_dir=gs://ap_tpu_storage/retinanet-train-eval-v3 --mode=train_and_eval --params_override={ type: retinanet, train: { checkpoint: { path: gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602, prefix: resnet50/ }, train_file_pattern: gs://ap_tpu_storage/converted/train-* }, eval: { val_json_file: gs://ap_tpu_storage/converted/coco_validation.json, eval_file_pattern: gs://ap_tpu_storage/converted/val-*, eval_samples: 500, num_steps_per_eval: 10000 } }
+palvelev@retinav3:~$
