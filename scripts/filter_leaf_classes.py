@@ -38,6 +38,8 @@ if __name__ == '__main__':
             leaf_classes.append(node['LabelName'])
 
     walk(hierarchy)
+    leaf_classes = sorted(set(leaf_classes))
     print('leaf classes found:', len(leaf_classes))
+
     pd.DataFrame({'classes': leaf_classes}).to_csv(f'leaf_classes_{len(leaf_classes)}.csv',
                                                    index=None)

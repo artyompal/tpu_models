@@ -42,11 +42,11 @@ export PART=part_5
 export MODEL_DIR=${STORAGE_BUCKET}/saved/1.1.0-$PART
 export TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*
 export EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*
-export VAL_JSON_FILE=coco_validation_$PART.json
+export VAL_JSON_FILE=tpu_models/scripts/coco_validation_$PART.json
 
 python tpu_models/models/official/detection/main.py --use_tpu=True --tpu="${TPU_NAME?}" \
     --num_cores=8 --model_dir="${MODEL_DIR?}" --mode="train_and_eval" \
     --params_override="{ type: retinanet, train: { checkpoint: { path: ${RESNET_CHECKPOINT?}, prefix: resnet50/ }, train_file_pattern: ${TRAIN_FILE_PATTERN?} }, eval: { val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?}, eval_samples: ${EVAL_SAMPLES?}, num_steps_per_eval: ${NUM_STEPS_PER_EVAL?} } }" \
-    --config_file models/official/detection/configs/yaml/1.0.0_retinanet.yaml
+    --config_file tpu_models/models/official/detection/configs/yaml/1.0.0_retinanet.yaml
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
