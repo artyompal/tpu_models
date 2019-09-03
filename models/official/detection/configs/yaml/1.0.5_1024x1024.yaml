@@ -1,0 +1,13 @@
+
+retinanet_parser:
+  output_size: [1024, 1024]
+
+train:
+  total_steps: 10000000
+  l2_weight_decay: 0
+
+  learning_rate:
+    init_learning_rate: 0.08
+    learning_rate_levels: [0.008]
+    learning_rate_steps: [1000000]
+    total_steps: 1000000000 # what does it mean?
