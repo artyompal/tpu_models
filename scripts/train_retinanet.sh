@@ -33,10 +33,6 @@ export NUM_STEPS_PER_EVAL=10000
 
 # default config:
 export PART=443_classes
-# export MODEL_DIR=${STORAGE_BUCKET}/saved/1.1.0-leaf_classes
-# export TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/462_classes/train*
-# export EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/462_classes/val*
-# export VAL_JSON_FILE=${STORAGE_BUCKET}/converted/coco_validation.json
 
 # partial datasets config:
 export PART=part_5
