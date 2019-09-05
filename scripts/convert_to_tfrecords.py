@@ -63,10 +63,6 @@ flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
 
-classes_df = pd.read_csv('challenge-2019-classes-description-500.csv', header=None)
-class_indices = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
-class_labels = {row[1]: row[2] for row in classes_df.itertuples()}
-
 # def create_tf_example(image,
 #                       image_dir,
 #                       bbox_annotations=None,
@@ -411,9 +407,14 @@ def main(_):
   # else:
   #   images_info_file = FLAGS.caption_annotations_file
 
+  classes_df = pd.read_csv('challenge-2019-classes-description-500.csv', header=None)
+  class_indices = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
+  class_labels = {row[1]: row[2] for row in classes_df.itertuples()}
+
   classes = None
   if FLAGS.classes:
     classes = pd.read_csv(FLAGS.classes)['classes'].values
+
 
   directory = os.path.dirname(FLAGS.output_prefix)
   if not tf.gfile.IsDirectory(directory):

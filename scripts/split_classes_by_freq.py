@@ -24,7 +24,7 @@ if __name__ == '__main__':
     classes = pd.read_csv(args.classes_file).classes.values
     print('classes:', classes.shape)
 
-    df = pd.read_csv(args.bboxes_file)
+    df = pd.read_csv(args.bboxes_file, index_col=0)
     df = df.loc[df.LabelName.isin(classes)]
 
     stats = df.groupby('LabelName').ImageID.nunique()
@@ -45,4 +45,4 @@ if __name__ == '__main__':
         print(part_counts)
 
         filename = f'classes_part_{part//part_len}_of_{args.num_splits}.csv'
-        pd.DataFrame({'classes': part_classes, 'counts': part_counts}).to_csv(filename, index=None)
+        pd.DataFrame({'classes': part_classes, 'counts': part_counts}).to_csv(filename)

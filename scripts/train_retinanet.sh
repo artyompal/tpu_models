@@ -3,7 +3,7 @@
 gcloud config set project tpu-test-246716
 ctpu up --tpu-size=v3-8 --machine-type n1-standard-8 --zone us-central1-a --name tpu3-1
 ctpu up --tpu-size=v2-8 --machine-type n1-standard-8 --zone us-central1-b --name tpu2-1
-
+gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=tpu3-1,tpu3-2 --source-ranges=0.0.0.0/0
 
 # configuring:
 
