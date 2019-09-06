@@ -280,7 +280,7 @@ def create_tf_example(group, image2idx):
 #
 #   return img_to_caption_annotation
 
-def _load_images_info(images_info_file: str) -> pd.DataFrame:
+def _load_images_info(images_info_file):
   # with tf.gfile.GFile(images_info_file, 'r') as fid:
   #   info_dict = json.load(fid)
   # return info_dict['images']
