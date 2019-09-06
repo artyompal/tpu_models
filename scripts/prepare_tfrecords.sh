@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export PYTHONPATH=$HOME/dev/frameworks/tensorflow_models:$HOME/dev/frameworks/tensorflow_models/research
+PYTHON=${PYTHON:-python3}
+PYTHONPATH=$PYTHONPATH:$HOME/dev/frameworks/tensorflow_models:$HOME/dev/frameworks/tensorflow_models/research
 
 # python3.6 gen_tfrecords.py \
 #     --image_dir data/validation/ \
@@ -9,7 +10,7 @@ export PYTHONPATH=$HOME/dev/frameworks/tensorflow_models:$HOME/dev/frameworks/te
 #     --classes_file output/classes_human_parts.csv \
 #     --num_shards=10
 
-python3.6 gen_tfrecords.py \
+$PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
     --output_prefix output/train_human_parts \
     --image_info_file output/train_human_parts.csv \

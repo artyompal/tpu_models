@@ -3,6 +3,8 @@
 set -e
 mkdir -p output
 
+PYTHON=${PYTHON:-python3}
+
 $PYTHON filter_dataset.py \
     output/validation_boxes.csv \
     data/challenge-2019-validation-detection-bbox.csv
