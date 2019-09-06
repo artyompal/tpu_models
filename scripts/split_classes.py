@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
 
     # generate human parts dataset
-    human_parts_classes = pd.read_csv('data/class-ids-human-body-parts-and-mammal.txt',
+    human_parts_classes = pd.read_csv('class-ids-human-body-parts-and-mammal.txt',
                                       header=None).iloc[:, 0].values
     dprint(human_parts_classes)
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     dprint(human_parts_classes_df)
     human_parts_classes_df.to_csv('output/classes_human_parts.csv', header=False, index=False)
 
-    human_parts_ids = pd.read_csv('data/train-image-ids-with-human-parts-and-mammal-boxes.txt',
+    human_parts_ids = pd.read_csv('train-image-ids-with-human-parts-and-mammal-boxes.txt',
                                   header=None).iloc[:, 0].values
     dprint(human_parts_ids)
 
