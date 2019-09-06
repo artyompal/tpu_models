@@ -3,7 +3,6 @@
 import argparse
 import os
 
-from typing import Any, Dict, List
 from glob import glob
 
 import numpy as np
@@ -24,12 +23,11 @@ if __name__ == '__main__':
 
     blacklist = [os.path.splitext(os.path.basename(f))[0] for f in glob('data/blacklist/*.jpg')]
 
-    classes_df = pd.read_csv(args.classes)
+    classes_df = pd.read_csv(args.classes, header=None, names=['classes', 'names'])
     classes = classes_df.classes.values
     dprint(classes.shape)
 
-    classes_desc_df = pd.read_csv('data/challenge-2019-classes-description-500.csv', header=None)
-    classes_desc = {row[1]: row[2] for row in classes_desc_df.itertuples()}
+    class_names = {row[1]: row[2] for row in classes_df.itertuples()}
 
     df = pd.read_csv(args.input)
     dprint(df.shape)
@@ -39,7 +37,6 @@ if __name__ == '__main__':
     df = df[~df.ImageID.isin(blacklist)]
 
     selected_dfs = []
-    # dprint(df)
 
     for label_name, label_df in df.groupby('LabelName'):
         samples = label_df.ImageID.unique()
@@ -56,7 +53,7 @@ if __name__ == '__main__':
 
     dprint(df.shape)
     dprint(df.head())
-    df.to_csv(args.output, index=None)
+    df.to_csv(args.output, index=False)
 
 
     if args.viz_directory:
@@ -67,5 +64,5 @@ if __name__ == '__main__':
 
         for label_name, label_df in df.groupby('LabelName'):
             for image_id in label_df.ImageID.unique():
-                os.symlink(os.path.abspath(f'validation/{image_id}.jpg'),
-                           f'{args.viz_directory}/{classes_desc[label_name]}_{image_id}.jpg')
+                os.symlink(os.path.abspath(f'data/validation/{image_id}.jpg'),
+                           f'{args.viz_directory}/{class_names[label_name]}_{image_id}.jpg')

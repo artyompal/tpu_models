@@ -22,3 +22,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     df = pd.read_csv(args.input)
+
+    classes_df = pd.read_csv(args.classes, header=None)
+    print('classes_df:', classes_df.shape)
+    assert classes_df.shape[0] in [300, 500]
+
+    df = df[df.LabelName.isin(classes_df.iloc[:, 0])]
+    df.to_csv(args.output, index=False)

@@ -19,7 +19,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     df = pd.read_csv(args.input, index_col=0)
-    print('df.shape before after cleaning', df.shape)
+    print('df.shape before cleaning', df.shape)
 
     if args.remove_groups:
         df = df[df.IsGroupOf == 0]
