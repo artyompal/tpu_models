@@ -3,26 +3,26 @@
 set -e
 mkdir -p output
 
-./filter_dataset.py \
+$PYTHON filter_dataset.py \
     output/validation_boxes.csv \
     data/challenge-2019-validation-detection-bbox.csv
-./filter_dataset.py \
+$PYTHON filter_dataset.py \
     output/train_boxes.csv \
     data/challenge-2019-train-detection-bbox.csv
-./filter_dataset.py \
+$PYTHON filter_dataset.py \
     output/train_boxes__no_inside.csv \
     data/challenge-2019-train-detection-bbox.csv \
     --remove_inside
-./filter_dataset.py \
+$PYTHON filter_dataset.py \
     output/train_boxes__no_pics__no_inside.csv \
     data/challenge-2019-train-detection-bbox.csv \
     --remove_depicted --remove_inside
 
-./split_classes.py \
+$PYTHON split_classes.py \
     data/challenge-2019-train-detection-bbox.csv \
     data/challenge-2019-classes-description-500.csv
 
-./build_validation.py \
+$PYTHON build_validation.py \
     output/val_human_parts.csv \
     output/validation_boxes.csv \
     output/classes_human_parts.csv \
