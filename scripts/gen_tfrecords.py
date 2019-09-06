@@ -52,7 +52,7 @@ flags.DEFINE_boolean('include_masks', False,
                      '(PNG encoded) in the result. default: False.')
 flags.DEFINE_string('image_dir', '', 'Directory containing images.')
 flags.DEFINE_string('image_info_file', '', 'File containing image information')
-flags.DEFINE_string('classes', '', 'CSV file with allowed classes')
+flags.DEFINE_string('classes_file', '', 'CSV file with allowed classes')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 
@@ -400,6 +400,7 @@ def main(_):
   if FLAGS.image_info_file:
     images_info_file = FLAGS.image_info_file
 
+  global classes_df, class_indices, class_labels, classes
   classes_df = pd.read_csv(FLAGS.classes_file, header=None, names=['classes', 'names'])
   class_indices = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
   class_labels = {row[1]: row[2] for row in classes_df.itertuples()}
@@ -420,5 +421,10 @@ def main(_):
 
 
 if __name__ == '__main__':
+  classes_df = None
+  class_indices = None
+  class_labels = None
+  classes = None
+
   tf.logging.set_verbosity(tf.logging.INFO)
   app.run(main)

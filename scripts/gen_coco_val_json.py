@@ -27,7 +27,7 @@ if __name__ == '__main__':
     classes = classes_df.classes.values
 
     classes_table = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
-    print(dict(list(classes_table.items())[:10]))
+    print(dict(list(classes_table.items())[:20]))
 
 
     df = pd.read_csv(args.input)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     images = {}
 
     for image_id in tqdm(unique_ids):
-        path = f'data/{args.type}/{image_id}.jpg'
+        path = f'data/validation/{image_id}.jpg'
         img = Image.open(path)
 
         image = {}
