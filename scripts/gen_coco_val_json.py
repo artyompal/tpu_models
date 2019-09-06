@@ -17,32 +17,20 @@ from PIL import Image
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('output', help='output filename', type=str)
-    parser.add_argument('type', help='train|validation|test', type=str)
+    parser.add_argument('input', help='input filename, csv', type=str)
     parser.add_argument('classes', help='classes list, in csv format', type=str)
     args = parser.parse_args()
-    assert args.type in ['train', 'validation', 'test']
 
     # read classes table
-    classes = pd.read_csv(args.classes).classes.values
-    print(classes.shape)
-
-    # read labels table
-    classes_df = pd.read_csv('data/challenge-2019-classes-description-500.csv', header=None)
-    classes_df = classes_df[classes_df.iloc[:, 0].isin(classes)]
+    classes_df = pd.read_csv(args.classes, header=None, names=['classes', 'names'])
     print('number of classes:', classes_df.shape[0])
-    assert classes_df.shape[0] == classes.size
+    classes = classes_df.classes.values
 
     classes_table = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
     print(dict(list(classes_table.items())[:10]))
 
 
-    if args.type == 'train':
-        df = pd.read_csv('data/challenge-2019-train-detection-bbox.csv')
-    elif args.type == 'validation':
-        df = pd.read_csv('data/challenge-2019-validation-detection-bbox.csv')
-    else:
-        assert False
-
+    df = pd.read_csv(args.input)
     df = df[df.LabelName.isin(classes)]
 
     unique_ids = sorted(df.ImageID.unique())

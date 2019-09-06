@@ -52,10 +52,6 @@ flags.DEFINE_boolean('include_masks', False,
                      '(PNG encoded) in the result. default: False.')
 flags.DEFINE_string('image_dir', '', 'Directory containing images.')
 flags.DEFINE_string('image_info_file', '', 'File containing image information')
-# flags.DEFINE_string('object_annotations_file', '', 'File containing object '
-#                     'annotations - boxes and instance masks.')
-# flags.DEFINE_string('caption_annotations_file', '', 'File containing image '
-#                     'captions.')
 flags.DEFINE_string('classes', '', 'CSV file with allowed classes')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
@@ -399,21 +395,15 @@ def main(_):
   assert FLAGS.image_dir, '"image_dir" is missing.'
   assert FLAGS.output_prefix, '"output_prefix" is missing.'
   assert FLAGS.image_info_file, 'annotation file is missing.'
+  assert FLAGS.classes_file, 'classes file is missing.'
 
   if FLAGS.image_info_file:
     images_info_file = FLAGS.image_info_file
-  # elif FLAGS.object_annotations_file:
-  #   images_info_file = FLAGS.object_annotations_file
-  # else:
-  #   images_info_file = FLAGS.caption_annotations_file
 
-  classes_df = pd.read_csv('challenge-2019-classes-description-500.csv', header=None)
+  classes_df = pd.read_csv(FLAGS.classes_file, header=None, names=['classes', 'names'])
   class_indices = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
   class_labels = {row[1]: row[2] for row in classes_df.itertuples()}
-
-  classes = None
-  if FLAGS.classes:
-    classes = pd.read_csv(FLAGS.classes)['classes'].values
+  classes = classes_df.classes.values
 
 
   directory = os.path.dirname(FLAGS.output_prefix)
