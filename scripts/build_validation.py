@@ -22,13 +22,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
-    blacklist = [os.path.splitext(os.path.basename(f))[0] for f in glob('blacklist/*.jpg')]
+    blacklist = [os.path.splitext(os.path.basename(f))[0] for f in glob('data/blacklist/*.jpg')]
 
     classes_df = pd.read_csv(args.classes)
     classes = classes_df.classes.values
     dprint(classes.shape)
 
-    classes_desc_df = pd.read_csv('challenge-2019-classes-description-500.csv', header=None)
+    classes_desc_df = pd.read_csv('data/challenge-2019-classes-description-500.csv', header=None)
     classes_desc = {row[1]: row[2] for row in classes_desc_df.itertuples()}
 
     df = pd.read_csv(args.input)
