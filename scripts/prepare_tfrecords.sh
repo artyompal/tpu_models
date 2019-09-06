@@ -10,7 +10,7 @@ $PYTHON gen_tfrecords.py \
     --output_prefix output/val_human_parts \
     --image_info_file output/val_human_parts.csv \
     --classes_file output/classes_human_parts.csv \
-    --num_shards=10
+    --num_shards=1
 
 $PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
