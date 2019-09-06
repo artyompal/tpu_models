@@ -66,7 +66,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 #                       caption_annotations=None,
 #                       include_masks=False):
 
-def create_tf_example(group: Tuple[str, pd.DataFrame], image2idx) -> tf.train.Example:
+def create_tf_example(group, image2idx):
   """Converts image and annotations to a tf.Example proto.
 
   Args - OLD DESCRIPTION FOR THE REFERENCE, IGNORE IT.
