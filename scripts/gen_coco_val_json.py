@@ -15,7 +15,7 @@ from PIL import Image
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('output', help='output filename', type=str)
+    parser.add_argument('output', help='output filename, json', type=str)
     parser.add_argument('input', help='input filename, csv', type=str)
     parser.add_argument('classes', help='classes list, in csv format', type=str)
     args = parser.parse_args()
