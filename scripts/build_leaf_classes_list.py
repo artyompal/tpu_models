@@ -1,16 +1,13 @@
 
 import argparse
 import json
-import os
-import sys
 
 from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
 
-from tqdm import tqdm
-from PIL import Image
+from debug import dprint
 
 
 if __name__ == '__main__':
@@ -21,8 +18,13 @@ if __name__ == '__main__':
 
     if args.num_classes == 300:
         filename = 'data/challenge-2019-label300-segmentable-hierarchy.json'
+        classes_df = pd.read_csv('data/challenge-2019-classes-description-segmentable.csv', header=None)
     else:
         filename = 'data/challenge-2019-label500-hierarchy.json'
+        classes_df = pd.read_csv('data/challenge-2019-classes-description-500.csv', header=None)
+
+    dprint(classes_df.shape)
+    assert classes_df.shape[0] == args.num_classes
 
     with open(filename) as f:
         hierarchy = json.load(f)
@@ -40,5 +42,5 @@ if __name__ == '__main__':
     leaf_classes = sorted(set(leaf_classes))
     print('leaf classes found:', len(leaf_classes))
 
-    pd.DataFrame({'classes': leaf_classes}).to_csv(f'classes_leaf_{len(leaf_classes)}.csv',
-                                                   index=None)
+    classes_df = classes_df[classes_df.iloc[:, 0].isin(leaf_classes)]
+    classes_df.to_csv(f'output/classes_leaf_{len(leaf_classes)}.csv', header=False, index=False)

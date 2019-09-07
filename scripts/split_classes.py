@@ -14,19 +14,32 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('bboxes', help='train bboxes, csv', type=str)
     parser.add_argument('classes', help='classes csv file', type=str)
-    # parser.add_argument('num_splits', help='number of class groups', type=int)
+    parser.add_argument('--gen_classes_stats', help='generate classes stats', action='store_true')
+    parser.add_argument('--gen_human_parts', help='generate human parts classes', action='store_true')
+    parser.add_argument('--gen_six_levels', help='generate 6 levels of classes', action='store_true')
     args = parser.parse_args()
 
 
-    classes_df = pd.read_csv(args.classes, header=None)
-    print('classes_df:', classes_df.shape)
-    assert classes_df.shape[0] in [300, 500]
+    if args.gen_classes_stats or args.gen_six_levels:
+        classes_df = pd.read_csv(args.classes, header=None, names=['classes', 'names'])
+        print('classes_df:', classes_df.shape)
 
-    df = pd.read_csv(args.bboxes)
-    dprint(df.head())
+        df = pd.read_csv(args.bboxes)
+        dprint(df.head())
+
+        dprint(df.LabelName.nunique())
+        assert df.LabelName.nunique() >= classes_df.shape[0]
+
+        counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
+        counts_df.columns = ['counts']
+        dprint(counts_df.head())
+
+        counts_df = classes_df.join(counts_df, on='classes')
+        counts_df = counts_df.sort_values('counts')
+        dprint(counts_df)
+        counts_df.to_csv('output/classes_stats.csv', index=False)
 
 
-    # generate human parts dataset
     human_parts_classes = pd.read_csv('extra/class-ids-human-body-parts-and-mammal.txt',
                                       header=None).iloc[:, 0].values
     dprint(human_parts_classes)
@@ -39,25 +52,27 @@ if __name__ == '__main__':
                                   header=None).iloc[:, 0].values
     dprint(human_parts_ids)
 
-    df = pd.read_csv('data/challenge-2019-train-detection-bbox.csv')
-    df = df[df.ImageID.isin(human_parts_ids)]
 
-    dprint(df.shape)
-    df.to_csv('output/train_human_parts.csv', index=False)
+    if args.gen_human_parts:
+        df = pd.read_csv('data/challenge-2019-train-detection-bbox.csv')
+        df = df[df.ImageID.isin(human_parts_ids)]
+
+        dprint(df.shape)
+        df.to_csv('output/train_human_parts.csv', index=False)
 
 
-'''
-    part_len = (len(image_counts) + args.num_splits - 1) // args.num_splits
-    for part in range(0, len(image_counts), part_len):
-        part_end = min(len(image_counts), part + part_len)
-        print(f'classes {part} to {part_end}')
+    # remove human body part classes as they are not marked everywhere
+    dprint(counts_df.shape)
+    counts_df = counts_df[~counts_df.classes.isin(human_parts_classes)]
+    dprint(counts_df.shape)
 
-        part_classes = stats.index[part : part_end]
-        part_counts = stats.values[part : part_end]
+    if args.gen_six_levels:
+        parts = [0, 100, 200, 300, 400, 450]
+        counts_df = counts_df.drop(columns='counts')
 
-        print(part_classes)
-        print(part_counts)
+        for i, (part, part_end) in enumerate(zip(parts, parts[1:])):
+            print(f'classes {part} to {part_end}')
+            filename = f'output/classes_part_{i}_of_{len(parts) - 1}.csv'
 
-        filename = f'classes_part_{part//part_len}_of_{args.num_splits}.csv'
-        pd.DataFrame({'classes': part_classes, 'counts': part_counts}).to_csv(filename, header=None)
-'''
+            classes_part_df = counts_df.iloc[part : part_end]
+            classes_part_df.to_csv(filename, header=False, index=False)
