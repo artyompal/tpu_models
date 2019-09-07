@@ -44,7 +44,7 @@ $PYTHON build_validation.py \
     --num_samples=5
 
 $PYTHON gen_coco_val_json.py \
-    output/val_human_parts.json \
+    output/validation_human_parts.json \
     output/val_human_parts.csv \
     output/classes_human_parts.csv
 
