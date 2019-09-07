@@ -14,5 +14,5 @@ do
 
     gsutil -m cp output/train_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
     gsutil -m cp output/val_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
-    gsutil -m cp output/val_$PART.json gs://ap_tpu_storage/converted/$PART/
+    gsutil -m cp output/validation_$PART.json gs://ap_tpu_storage/converted/$PART/
 done
