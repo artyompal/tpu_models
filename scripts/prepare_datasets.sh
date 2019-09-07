@@ -30,26 +30,30 @@ PYTHON=${PYTHON:-python3.6}
 # split classes
 #
 
-$PYTHON build_leaf_classes_list.py 500
+# $PYTHON build_leaf_classes_list.py 500
+#
+# $PYTHON split_classes.py \
+#     --gen_six_levels \
+#     data/challenge-2019-train-detection-bbox.csv \
+#     output/classes_leaf_443.csv
+#
+# $PYTHON build_validation.py \
+#     output/val_human_parts.csv \
+#     output/validation_boxes.csv \
+#     output/classes_human_parts.csv \
+#     --num_samples=5
+#
+# $PYTHON gen_coco_val_json.py \
+#     output/validation_human_parts.json \
+#     output/val_human_parts.csv \
+#     output/classes_human_parts.csv
 
-$PYTHON split_classes.py \
-    --gen_six_levels \
-    data/challenge-2019-train-detection-bbox.csv \
-    output/classes_leaf_443.csv
 
-$PYTHON build_validation.py \
-    output/val_human_parts.csv \
-    output/validation_boxes.csv \
-    output/classes_human_parts.csv \
-    --num_samples=5
+#
+# build the validation set
+#
 
-$PYTHON gen_coco_val_json.py \
-    output/validation_human_parts.json \
-    output/val_human_parts.csv \
-    output/classes_human_parts.csv
-
-
-for i in {0..4}
+for i in 0 # {0..4}
 do
     echo "========================================================================"
     echo "processing part $i"
@@ -58,10 +62,11 @@ do
         output/validation_part_${i}.csv \
         output/validation_boxes.csv \
         output/classes_part_${i}_of_5.csv \
-        --num_samples=5
+        --num_samples=5 \
+        --viz_directory=output/val_part_$i
 
     $PYTHON gen_coco_val_json.py \
         output/validation_part_${i}.json \
-        output/validation_boxes.csv \
+        output/validation_part_${i}.csv \
         output/classes_part_${i}_of_5.csv
 done

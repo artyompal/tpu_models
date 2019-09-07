@@ -12,6 +12,8 @@ import pandas as pd
 from tqdm import tqdm
 from PIL import Image
 
+from debug import dprint
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -26,13 +28,14 @@ if __name__ == '__main__':
     classes = classes_df.classes.values
 
     classes_table = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
-    print(dict(list(classes_table.items())[:20]))
+    print(dict(list(classes_table.items())))
 
 
     df = pd.read_csv(args.input)
     df = df[df.LabelName.isin(classes)]
 
     unique_ids = sorted(df.ImageID.unique())
+    dprint(len(unique_ids))
     image2id = {image_id: i for i, image_id in enumerate(unique_ids)}
 
 
