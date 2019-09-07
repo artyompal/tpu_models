@@ -12,6 +12,7 @@ cat .ssh/id_rsa.pub
 
 git config --global core.editor "vim"
 git clone git@github.com:artyompal/tpu_models.git
+git config --global --add difftool.prompt false
 
 sudo apt-get install -y python-tk
 pip install Cython matplotlib opencv-python-headless pyyaml Pillow
