@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument('output', help='output filename', type=str)
     parser.add_argument('input', help='description file, csv format', type=str)
     parser.add_argument('classes', help='classes list, in csv format with header', type=str)
-    parser.add_argument('num_samples', help='number of samples per class', type=int)
+    parser.add_argument('--num_samples', help='number of samples per class', type=int)
     parser.add_argument('--viz_directory', help='directory to save debug symlinks', type=str)
     args = parser.parse_args()
 

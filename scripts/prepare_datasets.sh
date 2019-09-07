@@ -5,47 +5,57 @@ mkdir -p output
 
 PYTHON=${PYTHON:-python3.6}
 
+
 #
 # filter datasets
 #
-$PYTHON filter_dataset.py \
-    output/validation_boxes.csv \
-    data/challenge-2019-validation-detection-bbox.csv
-$PYTHON filter_dataset.py \
-    output/train_boxes.csv \
-    data/challenge-2019-train-detection-bbox.csv
-$PYTHON filter_dataset.py \
-    output/train_boxes__no_inside.csv \
-    data/challenge-2019-train-detection-bbox.csv \
-    --remove_inside
-$PYTHON filter_dataset.py \
-    output/train_boxes__no_pics__no_inside.csv \
-    data/challenge-2019-train-detection-bbox.csv \
-    --remove_depicted --remove_inside
+
+# $PYTHON filter_dataset.py \
+#     output/validation_boxes.csv \
+#     data/challenge-2019-validation-detection-bbox.csv
+# $PYTHON filter_dataset.py \
+#     output/train_boxes.csv \
+#     data/challenge-2019-train-detection-bbox.csv
+# $PYTHON filter_dataset.py \
+#     output/train_boxes__no_inside.csv \
+#     data/challenge-2019-train-detection-bbox.csv \
+#     --remove_inside
+# $PYTHON filter_dataset.py \
+#     output/train_boxes__no_pics__no_inside.csv \
+#     data/challenge-2019-train-detection-bbox.csv \
+#     --remove_depicted --remove_inside
 
 
 #
 # split classes
 #
 
-$PYTHON build_leaf_classes_list.py 500
-
-$PYTHON split_classes.py \
-    --gen_six_levels \
-    data/challenge-2019-train-detection-bbox.csv \
-    output/classes_leaf_443.csv
-
-$PYTHON gen_coco_val_json.py \
-    output/val_human_parts.json \
-    output/val_human_parts.csv \
-    output/classes_human_parts.csv
-
-
-
-# ./build_validation.py validation_leaf_443.csv validation_boxes__no_grp.csv output/classes_leaf_443.csv 2
+# $PYTHON build_leaf_classes_list.py 500
 #
-# for i in {0..5}
-# do
-#     ./build_validation.py \
-#         validation_part_${i}.csv validation_boxes__no_grp.csv classes_part_${i}_of_6.csv 5
-# done
+# $PYTHON split_classes.py \
+#     --gen_six_levels \
+#     data/challenge-2019-train-detection-bbox.csv \
+#     output/classes_leaf_443.csv
+#
+# $PYTHON gen_coco_val_json.py \
+#     output/val_human_parts.json \
+#     output/val_human_parts.csv \
+#     output/classes_human_parts.csv
+
+
+for i in {0..4}
+do
+    echo "========================================================================"
+    echo "processing part $i"
+
+    $PYTHON build_validation.py \
+        output/validation_part_${i}.csv \
+        output/validation_boxes.csv \
+        output/classes_part_${i}_of_5.csv \
+        --num_samples=5
+
+    $PYTHON gen_coco_val_json.py \
+        output/validation_part_${i}.json \
+        output/validation_boxes.csv \
+        output/classes_part_${i}_of_5.csv
+done
