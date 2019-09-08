@@ -8,7 +8,7 @@ set -e
 $PYTHON gen_tfrecords.py \
     --image_dir data/validation/ \
     --output_prefix output/val_human_parts \
-    --image_info_file output/val_human_parts.csv \
+    --image_info_file output/validation_human_parts.csv \
     --classes_file output/classes_human_parts.csv \
     --num_shards=1
 

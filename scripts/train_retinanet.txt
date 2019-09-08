@@ -26,7 +26,7 @@ sudo /sbin/sysctl \
 
 export TPU_NAME=tpu3-1
 
-export PYTHONPATH=$HOME/dev/frameworks/tensorflow_models:$HOME/dev/frameworks/tensorflow_models/research:$HOME/dev/frameworks/tensorflow_models/research/slim:$HOME/tpu_models/models
+export PYTHONPATH=$HOME/src/models:$HOME/src/models/research:$HOME/tpu_models/models
 export STORAGE_BUCKET=gs://ap_tpu_storage
 export RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
 export EVAL_SAMPLES=500
