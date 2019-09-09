@@ -18,6 +18,7 @@ VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 NUM_STEPS_PER_EVAL=1000
 EVAL_SAMPLES=$(cat $VAL_JSON_FILE | grep width | wc -l)
 NUM_CLASSES=$(cat $VAL_JSON_FILE | grep name | wc -l)
+((NUM_CLASSES++)) # add background class
 
 
 python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME `
