@@ -1,9 +1,15 @@
 #!/bin/bash
 
+if [ "$#" -ne 2 ]; then
+    echo "usage: $0 dataset_code config_version "
+    exit
+fi
+
 
 set -e
 
 PART=$1
+VERSION=$2
 
 USE_TPU=True
 TPU_NAME=$HOSTNAME
@@ -12,7 +18,7 @@ PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
 RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
 
-MODEL_DIR=${STORAGE_BUCKET}/saved/1.0.3-$PART
+MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART
 TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
@@ -54,6 +60,5 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
             num_classes: $NUM_CLASSES,
         }
     }" \
-    --config_file ../models/official/detection/configs/yaml/1.0.3_constant.yaml
-
+    --config_file ../models/official/detection/configs/yaml/$VERSION*.yml
 
