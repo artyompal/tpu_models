@@ -7,19 +7,23 @@ gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=
 
 # configuring:
 
-sudo apt install mc
 ssh-keygen -t rsa -b 4096
 cat .ssh/id_rsa.pub
+
+
+echo export PYTHONPATH=$HOME/tpu_models/models >>~/.bashrc
 
 git config --global core.editor "vim"
 git config --global diff.tool "vimdiff"
 git config --global --add difftool.prompt false
 
-git clone git@github.com:artyompal/tpu_models.git
-
-sudo apt-get install -y python-tk
 pip install Cython matplotlib opencv-python-headless pyyaml Pillow
 pip install 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
+sudo apt install -y mc python-tk
+
+git clone git@github.com:artyompal/tpu_models.git
+
+
 
 sudo /sbin/sysctl \
        -w net.ipv4.tcp_keepalive_time=60 \
