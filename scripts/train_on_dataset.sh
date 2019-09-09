@@ -60,5 +60,5 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
             num_classes: $NUM_CLASSES,
         }
     }" \
-    --config_file ../models/official/detection/configs/yaml/$VERSION*.yml
+    --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml`
 
