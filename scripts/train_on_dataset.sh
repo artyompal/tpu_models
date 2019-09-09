@@ -28,7 +28,7 @@ gsutil cp $VAL_JSON_FILE output/
 LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
 
 
-NUM_STEPS_PER_EVAL=1000
+NUM_STEPS_PER_EVAL=5000
 EVAL_SAMPLES=$(cat $LOCAL_VAL_JSON_FILE | grep width | wc -l)
 NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
