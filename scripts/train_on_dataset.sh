@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+set -e
+
 PART=$1
 
 USE_TPU=True
@@ -15,38 +17,43 @@ TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 
+mkdir -p output
+gsutil cp $VAL_JSON_FILE output/
+LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
+
+
 NUM_STEPS_PER_EVAL=1000
-EVAL_SAMPLES=$(cat $VAL_JSON_FILE | grep width | wc -l)
-NUM_CLASSES=$(cat $VAL_JSON_FILE | grep name | wc -l)
+EVAL_SAMPLES=$(cat $LOCAL_VAL_JSON_FILE | grep width | wc -l)
+NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
 
 
-python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME `
-    --num_cores=8 --model_dir=$MODEL_DIR" --mode="train_and_eval" `
-    --params_override=`
-    "{"`
-    "   type: retinanet,"`
-    "   train: {"`
-    "       checkpoint: { "`
-    "           path: ${RESNET_CHECKPOINT}, "`
-    "           prefix: resnet50/ "`
-    "       }, "`
-    "       train_file_pattern: ${TRAIN_FILE_PATTERN} "`
-    "   }, "`
-    "   eval: { "`
-    "       val_json_file: ${VAL_JSON_FILE}, "`
-    "       eval_file_pattern: ${EVAL_FILE_PATTERN}, "`
-    "       eval_samples: ${EVAL_SAMPLES}, "`
-    "       num_steps_per_eval: ${NUM_STEPS_PER_EVAL} "`
-    "   }, "`
-    "   retinanet_head: { "`
-    "       num_classes: ${NUM_CLASSES} "`
-    "   }, "`
-    "   retinanet_loss: { "`
-    "       num_classes: ${NUM_CLASSES} "`
-    "   }, "`
-    "   postprocess: { "`
-    "       num_classes: ${NUM_CLASSES} "`
-    "   } "`
-    "}" `
+python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
+    --num_cores=8 --model_dir=$MODEL_DIR --mode=train_and_eval \
+    --params_override="{
+        train: {
+            checkpoint: {  
+                path: $RESNET_CHECKPOINT, 
+                prefix: resnet50/ 
+            },
+            train_file_pattern: $TRAIN_FILE_PATTERN
+        }, 
+        eval: { 
+            val_json_file: $VAL_JSON_FILE, 
+            eval_file_pattern: $EVAL_FILE_PATTERN, 
+            eval_samples: $EVAL_SAMPLES, 
+            num_steps_per_eval: $NUM_STEPS_PER_EVAL 
+        },
+        retinanet_head: {
+            num_classes: $NUM_CLASSES,
+        },
+        retinanet_loss: {
+            num_classes: $NUM_CLASSES,
+        },
+        postprocess: {
+            num_classes: $NUM_CLASSES,
+        }
+    }" \
     --config_file ../models/official/detection/configs/yaml/1.0.3_constant.yaml
+
+
