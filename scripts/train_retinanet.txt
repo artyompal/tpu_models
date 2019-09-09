@@ -1,19 +1,21 @@
 #!/bin/bash
 
 gcloud config set project tpu-test-246716
-ctpu up --tpu-size=v3-8 --machine-type n1-standard-8 --zone us-central1-a --name tpu3-1
-ctpu up --tpu-size=v2-8 --machine-type n1-standard-8 --zone us-central1-b --name tpu2-1
+ctpu up --tpu-size=v3-8 --machine-type n1-standard-4 --zone us-central1-a --name tpu3-1
+ctpu up --tpu-size=v2-8 --machine-type n1-standard-4 --zone us-central1-b --name tpu2-1
 gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=tpu3-1,tpu3-2 --source-ranges=0.0.0.0/0
 
 # configuring:
 
+sudo apt install mc
 ssh-keygen -t rsa -b 4096
 cat .ssh/id_rsa.pub
 
 git config --global core.editor "vim"
-git clone git@github.com:artyompal/tpu_models.git
 git config --global diff.tool "vimdiff"
 git config --global --add difftool.prompt false
+
+git clone git@github.com:artyompal/tpu_models.git
 
 sudo apt-get install -y python-tk
 pip install Cython matplotlib opencv-python-headless pyyaml Pillow
@@ -25,9 +27,7 @@ sudo /sbin/sysctl \
        net.ipv4.tcp_keepalive_probes=5
 
 
-export TPU_NAME=tpu3-1
-
-export PYTHONPATH=$HOME/src/models:$HOME/src/models/research:$HOME/tpu_models/models
+export PYTHONPATH=$HOME/tpu_models/models
 export STORAGE_BUCKET=gs://ap_tpu_storage
 export RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
 export EVAL_SAMPLES=500

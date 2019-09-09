@@ -1,8 +1,6 @@
 #!/bin/bash
 
 PYTHON=${PYTHON:-python3}
-# PYTHONPATH=$PYTHONPATH:$HOME/dev/frameworks/tensorflow_models:$HOME/dev/frameworks/tensorflow_models/research
-
 set -e
 
 $PYTHON gen_tfrecords.py \
