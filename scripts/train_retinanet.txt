@@ -53,3 +53,8 @@ python models/official/detection/main.py --use_tpu=True --tpu="${TPU_NAME?}" \
     --config_file models/official/detection/configs/yaml/1.0.3_constant.yaml
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
+
+./export_saved_model.sh leaf_443 1.1.0 gs://ap_tpu_storage/saved/1.1.0-leaf_443/model.ckpt-55000
+./export_saved_model.sh part_4 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_4/model.ckpt-55000
+
+CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py best_models/1.1.0-leaf_443-55000/
