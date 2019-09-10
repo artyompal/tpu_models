@@ -14,6 +14,7 @@ CHECKPOINT_PATH=$3
 
 PYTHONPATH=$HOME/tpu_models/models
 
+STORAGE_BUCKET=gs://ap_tpu_storage
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 gsutil cp $VAL_JSON_FILE output/
 LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
