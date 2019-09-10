@@ -12,9 +12,9 @@ PART=$1
 VERSION=$2
 CHECKPOINT_PATH=$3
 
-
 PYTHONPATH=$HOME/tpu_models/models
 
+LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
 NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
 
@@ -34,4 +34,3 @@ python ../models/official/detection/export_saved_model.py \
         }
     }" \
     --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml`
-
