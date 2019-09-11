@@ -31,7 +31,7 @@ Export a model:
 
 ./export_saved_model.sh leaf_443 1.1.0 gs://ap_tpu_storage/saved/1.1.0-leaf_443/model.ckpt-55000
 
-./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-human_parts/model.ckpt-5000
+./export_saved_model.sh human_parts 1.0.3 gs://ap_tpu_storage/saved/1.0.3-human_parts/model.ckpt-5000
 ./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_0/model.ckpt-25000
 ./export_saved_model.sh part_1 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_1/model.ckpt-25000
 ./export_saved_model.sh part_2 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_2/model.ckpt-30000
@@ -41,4 +41,5 @@ Export a model:
 
 Infer predictions:
 
-CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py best_models/1.1.0-leaf_443-55000/
+CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py predictions/1.0.3_human_parts.pkl best_models/sep_11/1.0.3-human_parts
+CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python inference.py predictions/1.1.0_part_0.pkl best_models/sep_11/1.1.0-part_0
