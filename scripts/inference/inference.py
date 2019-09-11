@@ -22,7 +22,6 @@ if __name__ == '__main__':
     signature = model.signatures["serving_default"]
     print('supported outputs:', signature.structured_outputs)
 
-    data_path = 'data'
     sample_submission_df = pd.read_csv('data/OBJDET_sample_submission.csv')
     image_ids = sample_submission_df['ImageId']
 
