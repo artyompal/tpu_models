@@ -5,4 +5,8 @@ train:
     init_learning_rate: 0.08
     learning_rate_levels: [0.008]
     learning_rate_steps: [1000000]
-    total_steps: 1000000000 # what does it mean?
+    total_steps: 1000000
+
+postprocess:
+  max_total_size: 150
+  score_threshold: 0
