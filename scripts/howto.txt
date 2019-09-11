@@ -1,15 +1,13 @@
-#!/bin/bash
+
+Create an instance:
 
 gcloud config set project tpu-test-246716
 ctpu up --tpu-size=v3-8 --machine-type n1-standard-4 --zone us-central1-a --name tpu3-1
 ctpu up --tpu-size=v2-8 --machine-type n1-standard-4 --zone us-central1-b --name tpu2-1
 gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=tpu3-1,tpu3-2 --source-ranges=0.0.0.0/0
 
-# configuring:
 
-ssh-keygen -t rsa -b 4096
-cat .ssh/id_rsa.pub
-
+Configure an instance:
 
 echo export PYTHONPATH=$HOME/tpu_models/models >>~/.bashrc
 
@@ -24,37 +22,23 @@ sudo apt install -y mc python-tk
 git clone git@github.com:artyompal/tpu_models.git
 
 
-
-sudo /sbin/sysctl \
-       -w net.ipv4.tcp_keepalive_time=60 \
-       net.ipv4.tcp_keepalive_intvl=60 \
-       net.ipv4.tcp_keepalive_probes=5
-
-
-export PYTHONPATH=$HOME/tpu_models/models
-export STORAGE_BUCKET=gs://ap_tpu_storage
-export RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
-export EVAL_SAMPLES=500
-export NUM_STEPS_PER_EVAL=10000
-
-# default config:
-export PART=443_classes
-
-# partial datasets config:
-export PART=part_5
-export MODEL_DIR=${STORAGE_BUCKET}/saved/1.0.3-$PART
-export TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*
-export EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*
-export VAL_JSON_FILE=scripts/coco_validation_$PART.json
-
-python models/official/detection/main.py --use_tpu=True --tpu="${TPU_NAME?}" \
-    --num_cores=8 --model_dir="${MODEL_DIR?}" --mode="train_and_eval" \
-    --params_override="{ type: retinanet, train: { checkpoint: { path: ${RESNET_CHECKPOINT?}, prefix: resnet50/ }, train_file_pattern: ${TRAIN_FILE_PATTERN?} }, eval: { val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?}, eval_samples: ${EVAL_SAMPLES?}, num_steps_per_eval: ${NUM_STEPS_PER_EVAL?} } }" \
-    --config_file models/official/detection/configs/yaml/1.0.3_constant.yaml
+Run tensorboard:
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
+
+Export a model:
+
 ./export_saved_model.sh leaf_443 1.1.0 gs://ap_tpu_storage/saved/1.1.0-leaf_443/model.ckpt-55000
-./export_saved_model.sh part_4 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_4/model.ckpt-55000
+
+./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-human_parts/model.ckpt-5000
+./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_0/model.ckpt-25000
+./export_saved_model.sh part_1 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_1/model.ckpt-25000
+./export_saved_model.sh part_2 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_2/model.ckpt-30000
+./export_saved_model.sh part_3 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_3/model.ckpt-30000
+./export_saved_model.sh part_4 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_4/model.ckpt-65000
+
+
+Infer predictions:
 
 CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py best_models/1.1.0-leaf_443-55000/
