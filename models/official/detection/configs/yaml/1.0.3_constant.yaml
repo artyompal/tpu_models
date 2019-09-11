@@ -9,4 +9,4 @@ train:
 
 postprocess:
   max_total_size: 150
-  score_threshold: 0
+  score_threshold: 0.0

@@ -1,11 +1,11 @@
 
 train:
-  total_steps: 1000000
+  total_steps: 200000
+  frozen_variable_prefix: 'disable_this'
   learning_rate:
     init_learning_rate: 0.08
-    learning_rate_levels: [0.008, 0.0008, 0.00008]
-    learning_rate_steps: [20000, 50000, 100000]
-    total_steps: 1000000
+    learning_rate_levels: [0.008, 0.0008]
+    learning_rate_steps: [60000, 120000]
 
 postprocess:
   max_total_size: 150
@@ -14,3 +14,7 @@ postprocess:
 resnet:
   resnet_depth: 101
 
+
+postprocess:
+  max_total_size: 150
+  score_threshold: 0.0

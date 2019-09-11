@@ -10,6 +10,7 @@ gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=
 Configure an instance:
 
 echo export PYTHONPATH=$HOME/tpu_models/models >>~/.bashrc
+export PYTHONPATH=$HOME/tpu_models/models
 
 git config --global core.editor "vim"
 git config --global diff.tool "vimdiff"
@@ -20,6 +21,19 @@ pip install 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirec
 sudo apt install -y mc python-tk
 
 git clone git@github.com:artyompal/tpu_models.git
+
+
+Train a model:
+
+gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-b" "tpu2-1"
+gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3-2"
+
+cd tpu_models/scripts/
+git pull
+
+./train_on_dataset.sh human_parts 1.2.3 2>&1 | tee -a ~/training.log
+
+./train_on_dataset.sh part_4 2.0.0 2>&1 | tee -a ~/training.log
 
 
 Run tensorboard:
