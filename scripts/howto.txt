@@ -36,7 +36,9 @@ git pull
 ./train_on_dataset.sh part_4 2.0.0 2>&1 | tee -a ~/training.log
 
 
-Run tensorboard:
+Monitor training:
+
+clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
