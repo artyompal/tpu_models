@@ -4,6 +4,8 @@ Create an instance:
 gcloud config set project tpu-test-246716
 ctpu up --tpu-size=v3-8 --machine-type n1-standard-4 --zone us-central1-a --name tpu3-1
 ctpu up --tpu-size=v2-8 --machine-type n1-standard-4 --zone us-central1-b --name tpu2-1
+ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2 --zone us-central1-b --name ptpu2-1 --preemptible
+
 gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=tpu3-1,tpu3-2 --source-ranges=0.0.0.0/0
 
 
@@ -16,11 +18,11 @@ git config --global core.editor "vim"
 git config --global diff.tool "vimdiff"
 git config --global --add difftool.prompt false
 
-pip install Cython matplotlib opencv-python-headless pyyaml Pillow
-pip install 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
-sudo apt install -y mc htop python-tk 
+pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow
+pip install --user 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
 
 git clone git@github.com:artyompal/tpu_models.git
+sudo apt install -y mc htop python-tk
 
 
 Train a model:
@@ -30,9 +32,8 @@ gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3
 
 cd tpu_models/scripts/
 git pull
-
-./train_on_dataset.sh human_parts 1.2.3
-./train_on_dataset.sh part_4 2.1.0
+./train_on_dataset.sh part_4 2.0.4
+./train_on_dataset.sh human_parts 2.0.4
 
 
 Monitor training:
