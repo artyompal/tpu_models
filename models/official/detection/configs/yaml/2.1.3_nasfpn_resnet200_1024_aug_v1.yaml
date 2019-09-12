@@ -24,12 +24,11 @@ retinanet_parser:
   aug_scale_min: 0.8
   aug_scale_max: 1.2
   output_size: [1024, 1024]
+  max_num_instances: 200
+  use_autoaugment: True
+  autoaugment_policy_name: 'v1'
 
 postprocess:
   max_total_size: 150
   score_threshold: 0.0
 
-retinanet_parser:
-  max_num_instances: 200
-  use_autoaugment: True
-  autoaugment_policy_name: 'v1'

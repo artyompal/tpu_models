@@ -1,7 +1,6 @@
 
 train:
   total_steps: 200000
-  frozen_variable_prefix: 'disable_this'
   learning_rate:
     init_learning_rate: 0.08
     learning_rate_levels: [0.008, 0.0008]

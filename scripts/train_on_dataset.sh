@@ -43,17 +43,17 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
     --num_cores=8 --model_dir=$MODEL_DIR --mode=train_and_eval \
     --params_override="{
         train: {
-            checkpoint: {  
-                path: $RESNET_CHECKPOINT, 
-                prefix: resnet50/ 
+            checkpoint: {
+                path: $RESNET_CHECKPOINT,
+                prefix: resnet50/
             },
             train_file_pattern: $TRAIN_FILE_PATTERN
-        }, 
-        eval: { 
-            val_json_file: $VAL_JSON_FILE, 
-            eval_file_pattern: $EVAL_FILE_PATTERN, 
-            eval_samples: $EVAL_SAMPLES, 
-            num_steps_per_eval: $NUM_STEPS_PER_EVAL 
+        },
+        eval: {
+            val_json_file: $VAL_JSON_FILE,
+            eval_file_pattern: $EVAL_FILE_PATTERN,
+            eval_samples: $EVAL_SAMPLES,
+            num_steps_per_eval: $NUM_STEPS_PER_EVAL
         },
         retinanet_head: {
             num_classes: $NUM_CLASSES,
@@ -65,5 +65,5 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
             num_classes: $NUM_CLASSES,
         }
     }" \
-    --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml`
-
+    --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml` \
+    2>&1 | tee -a ~/training_$VERSION.log

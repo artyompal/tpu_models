@@ -1,17 +1,16 @@
 
 train:
-  total_steps: 1000000
-  frozen_variable_prefix: 'disable_this'
+  total_steps: 200000
   learning_rate:
     init_learning_rate: 0.08
     learning_rate_levels: [0.008, 0.0008]
-    learning_rate_steps: [60000, 120000]
+    learning_rate_steps: [45000, 90000]
 
 architecture:
   multilevel_features: 'nasfpn'
 
 resnet:
-  resnet_depth: 200
+  resnet_depth: 50
 
 nasfpn:
   fpn_feat_dims: 256
@@ -23,12 +22,11 @@ nasfpn:
 retinanet_parser:
   aug_scale_min: 0.8
   aug_scale_max: 1.2
-  output_size: [1024, 1024]
-  max_num_instances: 200
   use_autoaugment: True
   autoaugment_policy_name: 'v3'
+  max_num_instances: 200
 
 postprocess:
-  max_total_size: 150
+  max_total_size: 200
   score_threshold: 0.0
 
