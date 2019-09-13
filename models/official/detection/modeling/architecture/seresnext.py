@@ -195,9 +195,9 @@ def maxpool2d(x,
 
     if (padding[0] > 0) or (padding[1] > 0):
         if is_channels_first(data_format):
-            x = tf.pad(x, [[0, 0], [0, 0], list(padding), list(padding)], mode="REFLECT")
+            x = tf.pad(x, [[0, 0], [0, 0], list(padding), list(padding)], mode="CONSTANT")
         else:
-            x = tf.pad(x, [[0, 0], list(padding), list(padding), [0, 0]], mode="REFLECT")
+            x = tf.pad(x, [[0, 0], list(padding), list(padding), [0, 0]], mode="CONSTANT")
 
     x = tf.keras.layers.MaxPooling2D(
         pool_size=pool_size,
