@@ -12,7 +12,6 @@ from tqdm import tqdm
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('destination', help='result filename, Pickle format', type=str)
     parser.add_argument('directory', help='TF SavedModel directory', type=str)
     args = parser.parse_args()
 
@@ -34,5 +33,6 @@ if __name__ == '__main__':
             pred = signature(tf.constant(data))
             predictions.append(pred)
 
-    with open(args.destination, 'wb') as f:
+    filename = os.path.basename(os.path.normpath(args.directory)) + '.pkl'
+    with open(filename, 'wb') as f:
         pickle.dump(predictions, f)
