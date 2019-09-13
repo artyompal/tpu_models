@@ -68,7 +68,7 @@ class Anchor(object):
     """Generates multiscale anchor boxes.
 
     Returns:
-      a Tensor of shape [N, 4], represneting anchor boxes of all levels
+      a Tensor of shape [N, 4], representing anchor boxes of all levels
       concatenated together.
     """
     boxes_all = []

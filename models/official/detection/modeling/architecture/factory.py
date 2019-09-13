@@ -24,6 +24,7 @@ from modeling.architecture import identity
 from modeling.architecture import nasfpn
 from modeling.architecture import nn_ops
 from modeling.architecture import resnet
+from modeling.architecture import seresnext
 
 
 def batch_norm_relu_generator(params):
@@ -47,6 +48,9 @@ def backbone_generator(params):
         resnet_depth=resnet_params.resnet_depth,
         dropblock=dropblock_generator(resnet_params.dropblock),
         batch_norm_relu=batch_norm_relu_generator(resnet_params.batch_norm))
+  elif params.architecture.backbone == 'seresnext':
+    resnet_params = params.seresnext
+    backbone_fn = seresnext.SEResNeXt(blocks=resnet_params.resnet_depth)
   else:
     raise ValueError('Backbone model %s is not supported.' %
                      params.architecture.backbone)
