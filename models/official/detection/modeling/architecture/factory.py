@@ -49,7 +49,7 @@ def backbone_generator(params):
         dropblock=dropblock_generator(resnet_params.dropblock),
         batch_norm_relu=batch_norm_relu_generator(resnet_params.batch_norm))
   elif params.architecture.backbone == 'seresnext':
-    resnet_params = params.seresnext
+    resnet_params = params.resnet
     backbone_fn = seresnext.SEResNeXt(blocks=resnet_params.resnet_depth)
   else:
     raise ValueError('Backbone model %s is not supported.' %
