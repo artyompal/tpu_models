@@ -1117,13 +1117,11 @@ class SEResNeXt(object):
 
     def __call__(self,
                  x,
-                 training=False):
-        return self._gen_fn(x, training)
+                 is_training=False):
+        return self._gen_fn(x, is_training)
 
-    def _generator_fn():
-        def model(self,
-                  x,
-                  training=False):
+    def _generator_fn(self):
+        def model(x, is_training=False):
             """
             Build a model graph.
 
@@ -1131,7 +1129,7 @@ class SEResNeXt(object):
             ----------
             x : Tensor
                 Input tensor.
-            training : bool, or a TensorFlow boolean scalar tensor, default False
+            is_training : bool, or a TensorFlow boolean scalar tensor, default False
               Whether to return the output in training mode or in inference mode.
 
             Returns
@@ -1144,7 +1142,7 @@ class SEResNeXt(object):
                 x=x,
                 in_channels=in_channels,
                 out_channels=self.init_block_channels,
-                training=training,
+                training=is_training,
                 data_format=self.data_format,
                 name="features/init_block")
 
@@ -1161,7 +1159,7 @@ class SEResNeXt(object):
                         strides=strides,
                         cardinality=self.cardinality,
                         bottleneck_width=self.bottleneck_width,
-                        training=training,
+                        training=is_training,
                         data_format=self.data_format,
                         name="features/stage{}/unit{}".format(i + 1, j + 1))
                     in_channels = out_channels
