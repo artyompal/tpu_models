@@ -38,13 +38,16 @@ def load_parents() -> DefaultDict[str, Set[str]]:
 
     return parents
 
+def ftos(x: float) -> str:
+    return '%.5f' % x
+
 def format_prediction(class_id: int, box: np.array, score: float) -> str:
     class_name = classes[class_id - 1]
-    box_str = ' '.join(map(str, [box[1], box[0], box[3], box[2]]))
-    predicts = [f'{class_name} {score} {box_str}']
+    box_str = ' '.join(map(ftos, [box[1], box[0], box[3], box[2]]))
+    predicts = [f'{class_name} {ftos(score)} {box_str}']
 
     for parent in parents[class_name]:
-        predicts.append(f'{parent} {score} {box_str}')
+        predicts.append(f'{parent} {ftos(score)} {box_str}')
 
     return ' '.join(predicts)
 

@@ -22,16 +22,8 @@ def merge(lines: List[str]) -> str:
             preds.append(values[ofs : ofs + step])
             assert len(preds[-1]) == step
 
-            # print(preds[-1])
-            # if ofs > 6:
-            #     break
-
     preds.sort(key=lambda pred: -float(pred[1]))
     res = ' '.join(itertools.chain(*preds))
-
-    # print(res)
-    # sys.exit()
-
     return res
 
 if '__main__' == __name__:
