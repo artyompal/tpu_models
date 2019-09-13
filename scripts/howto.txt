@@ -45,8 +45,6 @@ tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
 Export a model:
 
-./export_saved_model.sh leaf_443 1.1.0 gs://ap_tpu_storage/saved/1.1.0-leaf_443/model.ckpt-55000
-
 ./export_saved_model.sh human_parts 1.0.3 gs://ap_tpu_storage/saved/1.0.3-human_parts/model.ckpt-5000
 ./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_0/model.ckpt-25000
 ./export_saved_model.sh part_1 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_1/model.ckpt-25000

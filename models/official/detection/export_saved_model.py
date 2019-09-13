@@ -59,6 +59,11 @@ def main(argv):
   del argv  # Unused.
 
   params = factory.config_generator(FLAGS.model)
+
+  if FLAGS.config_file:
+    params = params_dict.override_params_dict(
+        params, FLAGS.config_file, is_strict=True)
+
   params = params_dict.override_params_dict(
       params, FLAGS.params_override, is_strict=True)
   params.validate()
