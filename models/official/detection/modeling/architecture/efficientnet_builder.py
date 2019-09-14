@@ -22,8 +22,8 @@ import os
 import re
 import tensorflow as tf
 
-import efficientnet_model
-import utils
+from modeling.architecture import efficientnet_model
+from modeling.architecture import utils
 
 MEAN_RGB = [0.485 * 255, 0.456 * 255, 0.406 * 255]
 STDDEV_RGB = [0.229 * 255, 0.224 * 255, 0.225 * 255]
