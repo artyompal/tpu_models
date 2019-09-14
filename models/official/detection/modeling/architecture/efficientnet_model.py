@@ -469,7 +469,9 @@ class Model(tf.keras.Model):
     """
     outputs = None
     self.endpoints = {}
+
     features = {}
+    feature_idx = 1
 
     # Calls Stem layers
     with tf.variable_scope('stem'):
@@ -498,7 +500,11 @@ class Model(tf.keras.Model):
 
         if is_reduction:
           self.endpoints['reduction_%s' % reduction_idx] = outputs
-          features[idx] = outputs
+
+          if feature_idx >= 2 and feature_idx <= 5:
+            features[feature_idx] = outputs
+
+          feature_idx += 1
 
         if block.endpoints:
           for k, v in six.iteritems(block.endpoints):
