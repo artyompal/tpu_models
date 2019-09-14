@@ -25,6 +25,7 @@ from modeling.architecture import nasfpn
 from modeling.architecture import nn_ops
 from modeling.architecture import resnet
 from modeling.architecture import seresnext
+from modeling.architecture import efficientnet_builder
 
 
 def batch_norm_relu_generator(params):
@@ -51,6 +52,8 @@ def backbone_generator(params):
   elif params.architecture.backbone == 'seresnext':
     resnet_params = params.resnet
     backbone_fn = seresnext.SEResNeXt(blocks=resnet_params.resnet_depth)
+  elif params.architecture.backbone.startswith('efficientnet-b'):
+    backbone_fn = efficientnet_builder.effnet_generator(params.architecture.backbone)
   else:
     raise ValueError('Backbone model %s is not supported.' %
                      params.architecture.backbone)
