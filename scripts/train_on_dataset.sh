@@ -32,10 +32,11 @@ EVAL_SAMPLES=$(cat $LOCAL_VAL_JSON_FILE | grep width | wc -l)
 NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
 
-if (( $NUM_CLASSES < 20 ))
-then
-    NUM_STEPS_PER_EVAL=2000
-fi
+# we don't need this if we use CLR
+# if (( $NUM_CLASSES < 20 ))
+# then
+#     NUM_STEPS_PER_EVAL=2000
+# fi
 
 
 python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
