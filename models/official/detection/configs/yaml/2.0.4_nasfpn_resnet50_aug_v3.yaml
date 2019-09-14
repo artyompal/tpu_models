@@ -5,6 +5,9 @@ train:
     init_learning_rate: 0.08
     learning_rate_levels: [0.008, 0.0008]
     learning_rate_steps: [45000, 90000]
+  checkpoint:
+    path: 'gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602'
+    prefix: 'resnet50/'
 
 architecture:
   multilevel_features: 'nasfpn'
@@ -29,4 +32,3 @@ retinanet_parser:
 postprocess:
   max_total_size: 200
   score_threshold: 0.0
-

@@ -16,7 +16,6 @@ TPU_NAME=$HOSTNAME
 
 PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
-RESNET_CHECKPOINT=gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602
 
 MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART
 TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
@@ -43,10 +42,6 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
     --num_cores=8 --model_dir=$MODEL_DIR --mode=train_and_eval \
     --params_override="{
         train: {
-            checkpoint: {
-                path: $RESNET_CHECKPOINT,
-                prefix: resnet50/
-            },
             train_file_pattern: $TRAIN_FILE_PATTERN
         },
         eval: {
