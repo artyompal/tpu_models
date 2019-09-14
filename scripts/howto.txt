@@ -34,8 +34,8 @@ gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3
 
 cd tpu_models/scripts/
 git pull
-./train_on_dataset.sh part_4 2.0.4
 ./train_on_dataset.sh human_parts 2.0.4
+./train_on_dataset.sh part_4 2.0.4
 
 
 Debug model:
