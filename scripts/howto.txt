@@ -17,6 +17,8 @@ export PYTHONPATH=$HOME/tpu_models/models
 git config --global core.editor "vim"
 git config --global diff.tool "vimdiff"
 git config --global --add difftool.prompt false
+git config --global user.name "artyom"
+git config --global user.email "artyom@artyom"
 
 pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow
 pip install --user 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
@@ -34,6 +36,10 @@ cd tpu_models/scripts/
 git pull
 ./train_on_dataset.sh part_4 2.0.4
 ./train_on_dataset.sh human_parts 2.0.4
+
+
+Debug model:
+print([n.name for n in tf.get_default_graph().as_graph_def().node])
 
 
 Monitor training:
