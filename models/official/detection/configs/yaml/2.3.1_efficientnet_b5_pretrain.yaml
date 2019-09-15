@@ -7,8 +7,6 @@ train:
     learning_rate_steps: [45000, 90000]
   checkpoint:
     path: 'gs://ap_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
-    # prefix: 'resnet50/'
-
 
 architecture:
   multilevel_features: 'nasfpn'
@@ -32,4 +30,3 @@ retinanet_parser:
 postprocess:
   max_total_size: 200
   score_threshold: 0.0
-
