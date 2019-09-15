@@ -39,7 +39,15 @@ git pull
 
 
 Debug model:
-print([n.name for n in tf.get_default_graph().as_graph_def().node])
+
+def restore_from_checkpoint(self):
+  print([n.name for n in tf.get_default_graph().as_graph_def().node])
+
+# import the inspect_checkpoint library
+from tensorflow.python.tools import inspect_checkpoint as chkp
+
+# print all tensors in checkpoint file
+chkp.print_tensors_in_checkpoint_file("/tmp/model.ckpt", tensor_name='', all_tensors=True)
 
 
 Monitor training:
