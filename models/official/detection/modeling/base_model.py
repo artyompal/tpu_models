@@ -173,6 +173,7 @@ class Model(object):
       if self._checkpoint_prefix:
         assignment_map['/'] = self._checkpoint_prefix
 
+      print(assignment_map)
       tf.train.init_from_checkpoint(self._checkpoint, assignment_map)
       return tf.train.Scaffold()
 

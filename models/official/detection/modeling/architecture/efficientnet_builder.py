@@ -215,9 +215,11 @@ def build_model(images,
         f.write('global_params= %s\n\n' % str(global_params))
         f.write('blocks_args= %s\n\n' % str(blocks_args))
 
-  with tf.variable_scope(model_name):
-    model = efficientnet_model.Model(blocks_args, global_params)
-    outputs = model(images, training=training, features_only=features_only)
+  with tf.variable_scope('backbone'):
+    with tf.variable_scope(model_name):
+      model = efficientnet_model.Model(blocks_args, global_params)
+      outputs = model(images, training=training, features_only=features_only)
+
   outputs = tf.identity(outputs, 'features' if features_only else 'logits')
   return outputs, model.endpoints
 
@@ -243,12 +245,11 @@ def effnet_generator(model_name, override_params=None):
     assert isinstance(images, tf.Tensor)
     blocks_args, global_params = get_model_params(model_name, override_params)
 
-    with tf.variable_scope(model_name):
-      model = efficientnet_model.Model(blocks_args, global_params)
-      features = model(images, training=is_training, features_only=True)
+    with tf.variable_scope('backbone'):
+      with tf.variable_scope(model_name):
+        model = efficientnet_model.Model(blocks_args, global_params)
+        features = model(images, training=is_training, features_only=True)
 
-    # features = tf.identity(features, 'features')
-    # return features, model.endpoints
     return features
 
   return build_model_base
