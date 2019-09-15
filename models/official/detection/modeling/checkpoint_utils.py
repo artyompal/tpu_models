@@ -296,7 +296,7 @@ def init_from_checkpoint_opt(ckpt_dir_or_file, assignment_map):
 def _init_from_checkpoint(ckpt_dir_or_file, assignment_map):
   """See `init_from_checkpoint` for documentation."""
   ckpt_file = _get_checkpoint_filename(ckpt_dir_or_file)
-  reader = tf.load_checkpoint(ckpt_dir_or_file)
+  reader = tf.train.load_checkpoint(ckpt_dir_or_file)
   variable_map = reader.get_variable_to_shape_map()
   for tensor_name_in_ckpt, current_var_or_name in sorted(
       six.iteritems(assignment_map)):
@@ -373,7 +373,9 @@ def _init_from_checkpoint(ckpt_dir_or_file, assignment_map):
         if full_tensor_name.endswith("/"):
           full_tensor_name = full_tensor_name[:-1]
 
-        # if full_tensor_name not in variable_map:
+        if full_tensor_name not in variable_map:
+          # just initialize it like normal
+          continue
         #   raise ValueError(
         #       "Tensor %s (%s in %s) is not found in %s checkpoint" % (
         #           full_tensor_name, var_name[len(scopes) + 1:],

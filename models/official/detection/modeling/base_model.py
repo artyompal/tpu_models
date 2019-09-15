@@ -25,7 +25,7 @@ import six
 import tensorflow as tf
 
 from modeling import learning_rates
-from checkpoint_utils import init_from_checkpoint_opt
+from modeling.checkpoint_utils import init_from_checkpoint_opt
 
 
 def filter_trainable_variables(variables, frozen_variable_prefix):
