@@ -44,7 +44,7 @@ print([n.name for n in tf.get_default_graph().as_graph_def().node])
 
 Monitor training:
 
-clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)
+clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)'
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
