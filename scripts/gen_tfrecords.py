@@ -56,6 +56,7 @@ flags.DEFINE_string('classes_file', '', 'CSV file with allowed classes')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 flags.DEFINE_integer('min_samples_per_class', 0, 'Minimum number of samples per class.')
+flags.DEFINE_boolean('display_only', False, 'Don\'t write any file, just show what will be done.')
 
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -99,9 +100,6 @@ def create_tf_example(group, image2idx):
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
   image_id, image_df = group
-  # print(image_id)
-  # print(image_df)
-  # sys.exit()
 
   # some settings here
   bbox_annotations = True
@@ -234,53 +232,6 @@ def create_tf_example(group, image2idx):
   return example # key, example, num_annotations_skipped
 
 
-# def _load_object_annotations(object_annotations_file):
-#   """Loads object annotation JSON file."""
-#   with tf.gfile.GFile(object_annotations_file, 'r') as fid:
-#     obj_annotations = json.load(fid)
-#
-#   images = obj_annotations['images']
-#   category_index = label_map_util.create_category_index(
-#       obj_annotations['categories'])
-#
-#   img_to_obj_annotation = collections.defaultdict(list)
-#   tf.logging.info('Building bounding box index.')
-#   for annotation in obj_annotations['annotations']:
-#     image_id = annotation['image_id']
-#     img_to_obj_annotation[image_id].append(annotation)
-#
-#   missing_annotation_count = 0
-#   for image in images:
-#     image_id = image['id']
-#     if image_id not in img_to_obj_annotation:
-#       missing_annotation_count += 1
-#
-#   tf.logging.info('%d images are missing bboxes.', missing_annotation_count)
-#
-#   return img_to_obj_annotation, category_index
-
-# def _load_caption_annotations(caption_annotations_file):
-#   """Loads caption annotation JSON file."""
-#   with tf.gfile.GFile(caption_annotations_file, 'r') as fid:
-#     caption_annotations = json.load(fid)
-#
-#   img_to_caption_annotation = collections.defaultdict(list)
-#   tf.logging.info('Building caption index.')
-#   for annotation in caption_annotations['annotations']:
-#     image_id = annotation['image_id']
-#     img_to_caption_annotation[image_id].append(annotation)
-#
-#   missing_annotation_count = 0
-#   images = caption_annotations['images']
-#   for image in images:
-#     image_id = image['id']
-#     if image_id not in img_to_caption_annotation:
-#       missing_annotation_count += 1
-#
-#   tf.logging.info('%d images are missing captions.', missing_annotation_count)
-#
-#   return img_to_caption_annotation
-
 def _load_images_info(images_info_file, classes):
   df = pd.read_csv(images_info_file)
 
@@ -314,6 +265,9 @@ def _load_images_info(images_info_file, classes):
 
     print('annotations after upsampling:', df.shape)
     print(df.LabelName.value_counts())
+
+  if FLAGS.display_only:
+    sys.exit()
 
   # random shuffle
   df = df.sample(frac=1).reset_index(drop=True)
