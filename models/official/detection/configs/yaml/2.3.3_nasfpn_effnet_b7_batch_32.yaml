@@ -10,6 +10,7 @@ train:
     warmup_steps: 5000
   checkpoint:
     path: 'gs://ap_tpu_storage/pretrained/efficientnet-b7/model.ckpt'
+    prefix: 'backbone/'
 
 architecture:
   multilevel_features: 'nasfpn'
