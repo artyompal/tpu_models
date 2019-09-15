@@ -55,6 +55,7 @@ flags.DEFINE_string('image_info_file', '', 'File containing image information')
 flags.DEFINE_string('classes_file', '', 'CSV file with allowed classes')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
+flags.DEFINE_integer('min_samples_per_class', 0, 'Minimum number of samples per class.')
 
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -280,12 +281,43 @@ def create_tf_example(group, image2idx):
 #
 #   return img_to_caption_annotation
 
-def _load_images_info(images_info_file):
-  # with tf.gfile.GFile(images_info_file, 'r') as fid:
-  #   info_dict = json.load(fid)
-  # return info_dict['images']
-  return pd.read_csv(images_info_file)
+def _load_images_info(images_info_file, classes):
+  df = pd.read_csv(images_info_file)
 
+  if classes is not None:
+    print('annotations before filtering:', df.shape)
+    print(df)
+
+    df = df[df.LabelName.isin(classes)]
+
+    print('annotations after filtering:', df.shape)
+    print(df.LabelName.value_counts())
+
+  if FLAGS.min_samples_per_class:
+    all_dfs = []
+    print('balancing the dataset')
+    print(df.head())
+    print('df.shape was', df.shape)
+
+    for class_, class_df in tqdm(df.groupby('LabelName'), total=len(classes)):
+      if FLAGS.min_samples_per_class > class_df.shape[0]:
+        quot = FLAGS.min_samples_per_class // class_df.shape[0]
+        mod = FLAGS.min_samples_per_class % class_df.shape[0]
+
+        all_dfs.extend([class_df] * quot)
+        if mod:
+            all_dfs.append(class_df.sample(mod))
+      else:
+        all_dfs.append(class_df)
+
+    df = pd.concat(all_dfs)
+    print('df.shape now', df.shape)
+
+    print('annotations after upsampling:', df.shape)
+    print(df.head())
+    print(df.LabelName.value_counts())
+
+  return df
 
 def _create_tf_record_from_oid_annotations(
     images_info_file,
@@ -317,16 +349,7 @@ def _create_tf_record_from_oid_annotations(
       tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
                                   (i, num_shards)) for i in range(num_shards)
   ]
-  annotations = _load_images_info(images_info_file)
-
-  if classes is not None:
-    print('annotations before filtering:', annotations.shape)
-    print(annotations)
-
-    annotations = annotations[annotations.LabelName.isin(classes)]
-
-    print('annotations after filtering:', annotations.shape)
-    print(annotations.LabelName.value_counts())
+  annotations = _load_images_info(images_info_file, classes)
 
   # img_to_obj_annotation = None
   # img_to_caption_annotation = None
