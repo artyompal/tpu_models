@@ -296,7 +296,6 @@ def _load_images_info(images_info_file, classes):
   if FLAGS.min_samples_per_class:
     all_dfs = []
     print('balancing the dataset')
-    print(df.head())
     print('df.shape was', df.shape)
 
     for class_, class_df in tqdm(df.groupby('LabelName'), total=len(classes)):
@@ -314,9 +313,11 @@ def _load_images_info(images_info_file, classes):
     print('df.shape now', df.shape)
 
     print('annotations after upsampling:', df.shape)
-    print(df.head())
     print(df.LabelName.value_counts())
 
+  # random shuffle
+  df = df.sample(frac=1).reset_index(drop=True)
+  print(df)
   return df
 
 def _create_tf_record_from_oid_annotations(
