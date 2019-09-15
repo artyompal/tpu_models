@@ -25,6 +25,7 @@ import six
 import tensorflow as tf
 
 from modeling import learning_rates
+from checkpoint_utils import init_from_checkpoint_opt
 
 
 def filter_trainable_variables(variables, frozen_variable_prefix):
@@ -174,7 +175,7 @@ class Model(object):
         assignment_map['/'] = self._checkpoint_prefix
 
       print(assignment_map)
-      tf.train.init_from_checkpoint(self._checkpoint, assignment_map)
+      init_from_checkpoint_opt(self._checkpoint, assignment_map)
       return tf.train.Scaffold()
 
     return scaffold_fn if self._checkpoint else None
