@@ -168,9 +168,14 @@ class Model(object):
     """Returns scaffold function to restore parameters from checkpoint."""
     def scaffold_fn():
       """Loads pretrained model through scaffold function."""
-      tf.train.init_from_checkpoint(self._checkpoint,
-                                    {'/': self._checkpoint_prefix,})
+      assignment_map = {}
+
+      if self._checkpoint_prefix:
+        assignment_map['/'] = self._checkpoint_prefix
+
+      tf.train.init_from_checkpoint(self._checkpoint, assignment_map)
       return tf.train.Scaffold()
+
     return scaffold_fn if self._checkpoint else None
 
   def summarize(self):
