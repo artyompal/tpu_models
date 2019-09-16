@@ -29,8 +29,10 @@ import hashlib
 import io
 import multiprocessing
 import os
+import random
 import sys
 
+from collections import Counter
 from functools import partial
 from typing import Any, Tuple
 
@@ -60,6 +62,7 @@ flags.DEFINE_boolean('display_only', False, 'Don\'t write any file, just show wh
 
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
+
 
 # def create_tf_example(image,
 #                       image_dir,
@@ -244,34 +247,6 @@ def _load_images_info(images_info_file, classes):
     print('annotations after filtering:', df.shape)
     print(df.LabelName.value_counts())
 
-  if FLAGS.min_samples_per_class:
-    all_dfs = []
-    print('balancing the dataset')
-    print('df.shape was', df.shape)
-
-    for class_, class_df in tqdm(df.groupby('LabelName'), total=len(classes)):
-      if FLAGS.min_samples_per_class > class_df.shape[0]:
-        quot = FLAGS.min_samples_per_class // class_df.shape[0]
-        mod = FLAGS.min_samples_per_class % class_df.shape[0]
-
-        all_dfs.extend([class_df] * quot)
-        if mod:
-            all_dfs.append(class_df.sample(mod))
-      else:
-        all_dfs.append(class_df)
-
-    df = pd.concat(all_dfs)
-    print('df.shape now', df.shape)
-
-    print('annotations after upsampling:', df.shape)
-    print(df.LabelName.value_counts())
-
-  if FLAGS.display_only:
-    sys.exit()
-
-  # random shuffle
-  df = df.sample(frac=1).reset_index(drop=True)
-  print(df)
   return df
 
 def _create_tf_record_from_oid_annotations(
@@ -299,65 +274,58 @@ def _create_tf_record_from_oid_annotations(
     classes: np.array of classes or None
   """
 
-  tf.logging.info('writing to output path: %s', output_path)
+  tf.logging.info('writing to the output path: %s', output_path)
   writers = [
       tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
                                   (i, num_shards)) for i in range(num_shards)
   ]
   annotations = _load_images_info(images_info_file, classes)
 
-  # img_to_obj_annotation = None
-  # img_to_caption_annotation = None
-  # category_index = None
-
-  # if object_annotations_file:
-  #   img_to_obj_annotation, category_index = (
-  #       _load_object_annotations(object_annotations_file))
-
-  # if caption_annotations_file:
-  #   img_to_caption_annotation = (
-  #       _load_caption_annotations(caption_annotations_file))
-
-  # def _get_object_annotation(image_id):
-  #   if img_to_obj_annotation:
-  #     return img_to_obj_annotation[image_id]
-  #   else: return None
-  #
-  # def _get_caption_annotation(image_id):
-  #   if img_to_caption_annotation:
-  #     return img_to_caption_annotation[image_id]
-  #   else: return None
-
-#   pool = multiprocessing.Pool()
-  total_num_annotations_skipped = 0
-
   unique_ids = sorted(annotations.ImageID.unique())
   image2idx = {image: i for i, image in enumerate(unique_ids)}
   unique_ids_count = len(unique_ids)
 
+
+  print('grouping annotations')
+  num_classes = annotations.LabelName.nunique()
+  all_samples = []
+
+  for _, class_df in tqdm(annotations.groupby('LabelName'), total=num_classes):
+    samples = [sample_df for _, sample_df in class_df.groupby('ImageID')]
+
+    if len(samples) >= FLAGS.min_samples_per_class:
+      all_samples.extend(samples)
+    else:
+      quot = FLAGS.min_samples_per_class // len(samples)
+      mod = FLAGS.min_samples_per_class % len(samples)
+
+      all_samples.extend(samples * quot)
+
+      if mod:
+        all_samples.extend(random.sample(samples, mod))
+
+  random.shuffle(all_samples)
+
+  stats = Counter(sample_df.LabelName[0] for sample_df in all_samples)
+  print('class statistics:', stats)
+  print('total samples:', len(all_samples))
+
+  print('writing tfrecords')
+
+
+#   pool = multiprocessing.Pool()
 #   for idx, tf_example in enumerate(tqdm(pool.imap(partial(create_tf_example, image2idx=image2idx),
 #                                                   annotations.groupby('ImageID')),
 #                                    total=unique_ids_count)):
 #       writers[idx % num_shards].write(tf_example.SerializeToString())
 
-  for idx, df in enumerate(tqdm(annotations.groupby('ImageID'), total=unique_ids_count)):
-      tf_example = create_tf_example(df, image2idx=image2idx)
-      writers[idx % num_shards].write(tf_example.SerializeToString())
+  # for idx, df in enumerate(tqdm(annotations.groupby('ImageID'), total=unique_ids_count)):
+  #     tf_example = create_tf_example(df, image2idx=image2idx)
+  #     writers[idx % num_shards].write(tf_example.SerializeToString())
 
-
-#   for idx, (_, tf_example, num_annotations_skipped) in enumerate(
-#       tqdm(pool.imap(_pool_create_tf_example,
-#                      annotations.itertuples()))):
-#                 [(image,
-#                   image_dir,
-#                   _get_object_annotation(image['id']),
-#                   category_index,
-#                   _get_caption_annotation(image['id']),
-#                   include_masks)
-#                  for image in annotations])):
-
-    # total_num_annotations_skipped += num_annotations_skipped
-    # writers[idx % num_shards].write(tf_example.SerializeToString())
+  for idx, sample_df in enumerate(tqdm(all_samples)):
+    tf_example = create_tf_example(sample_df, image2idx=image2idx)
+    writers[idx % num_shards].write(tf_example.SerializeToString())
 
 #   pool.close()
 #   pool.join()
@@ -366,7 +334,6 @@ def _create_tf_record_from_oid_annotations(
     writer.close()
 
   tf.logging.info('Finished writing')
-  # tf.logging.info('Finished writing, skipped %d annotations.', total_num_annotations_skipped)
 
 
 def main(_):
