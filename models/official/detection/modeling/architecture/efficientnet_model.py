@@ -269,7 +269,7 @@ class MBConvBlock(tf.keras.layers.Layer):
       with tf.variable_scope('se'):
         x = self._call_se(x)
 
-    self.endpoints = {'expansion_output': x}
+    # self.endpoints = {'expansion_output': x}
 
     x = self._bn2(self._project_conv(x), training=training)
     if self._block_args.id_skip:
@@ -336,7 +336,7 @@ class MBConvBlockWithoutDepthwise(MBConvBlock):
       x = inputs
     tf.logging.info('Expand: %s shape: %s' % (x.name, x.shape))
 
-    self.endpoints = {'expansion_output': x}
+    # self.endpoints = {'expansion_output': x}
 
     x = self._bn1(self._project_conv(x), training=training)
     if self._block_args.id_skip:
@@ -468,17 +468,17 @@ class Model(tf.keras.Model):
       output tensors.
     """
     outputs = None
-    self.endpoints = {}
+    # self.endpoints = {}
 
     features = {}
     feature_idx = 1
 
-    # Calls Stem layers
+    # Calls stem layers
     with tf.variable_scope('stem'):
       outputs = self._relu_fn(
           self._bn0(self._conv_stem(inputs), training=training))
     tf.logging.info('Built stem layers with output shape: %s' % outputs.shape)
-    self.endpoints['stem'] = outputs
+    # self.endpoints['stem'] = outputs
 
     # Calls blocks.
     reduction_idx = 0
@@ -496,36 +496,36 @@ class Model(tf.keras.Model):
           tf.logging.info('block_%s drop_connect_rate: %s' % (idx, drop_rate))
         outputs = block.call(
             outputs, training=training, drop_connect_rate=drop_rate)
-        self.endpoints['block_%s' % idx] = outputs
+        # self.endpoints['block_%s' % idx] = outputs
 
         if is_reduction:
-          self.endpoints['reduction_%s' % reduction_idx] = outputs
+          # self.endpoints['reduction_%s' % reduction_idx] = outputs
 
           if feature_idx >= 2 and feature_idx <= 5:
             features[feature_idx] = outputs
 
           feature_idx += 1
 
-        if block.endpoints:
-          for k, v in six.iteritems(block.endpoints):
-            self.endpoints['block_%s/%s' % (idx, k)] = v
-            if is_reduction:
-              self.endpoints['reduction_%s/%s' % (reduction_idx, k)] = v
+        # if block.endpoints:
+        #   for k, v in six.iteritems(block.endpoints):
+        #     self.endpoints['block_%s/%s' % (idx, k)] = v
+        #     if is_reduction:
+        #       self.endpoints['reduction_%s/%s' % (reduction_idx, k)] = v
 
-    self.endpoints['features'] = outputs
+    # self.endpoints['features'] = outputs
 
-    if not features_only:
-      # Calls final layers and returns logits.
-      with tf.variable_scope('head'):
-        outputs = self._relu_fn(
-            self._bn1(self._conv_head(outputs), training=training))
-        outputs = self._avg_pooling(outputs)
-        if self._dropout:
-          outputs = self._dropout(outputs, training=training)
-        self.endpoints['global_pool'] = outputs
-        if self._fc:
-          outputs = self._fc(outputs)
-        self.endpoints['head'] = outputs
+    # if not features_only:
+    #   # Calls final layers and returns logits.
+    #   with tf.variable_scope('head'):
+    #     outputs = self._relu_fn(
+    #         self._bn1(self._conv_head(outputs), training=training))
+    #     outputs = self._avg_pooling(outputs)
+    #     if self._dropout:
+    #       outputs = self._dropout(outputs, training=training)
+    #     self.endpoints['global_pool'] = outputs
+    #     if self._fc:
+    #       outputs = self._fc(outputs)
+    #     self.endpoints['head'] = outputs
 
     # return outputs
     print('features:', features)
