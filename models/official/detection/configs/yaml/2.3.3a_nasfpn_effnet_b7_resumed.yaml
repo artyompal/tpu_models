@@ -1,18 +1,20 @@
 
 train:
   total_steps: 200000
+  train_batch_size: 32
   learning_rate:
-    init_learning_rate: 0.08
-    learning_rate_levels: [0.008, 0.0008]
-    learning_rate_steps: [45000, 90000]
+    type: 'cosine'
+    init_learning_rate: 0.04
+    total_steps: 30000
+    warmup_learning_rate: 0.000001
+    warmup_steps: 5000
   checkpoint:
-    path: 'gs://ap_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
+    path: 'gs://ap_tpu_storage/saved/2.3.3-part_4/model.ckpt'
     prefix: 'backbone/'
-
 
 architecture:
   multilevel_features: 'nasfpn'
-  backbone: efficientnet-b5
+  backbone: 'efficientnet-b7'
 
 nasfpn:
   fpn_feat_dims: 256
@@ -22,7 +24,7 @@ nasfpn:
   use_separable_conv: False
 
 retinanet_parser:
-  output_size: [456, 456]
+  output_size: [600, 600]
   aug_scale_min: 0.8
   aug_scale_max: 1.2
   use_autoaugment: True
