@@ -18,7 +18,7 @@ PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
 
 MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART
-TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
+TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/balanced_train*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 

@@ -275,10 +275,11 @@ def _create_tf_record_from_oid_annotations(
   """
 
   tf.logging.info('writing to the output path: %s', output_path)
-  writers = [
-      tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
-                                  (i, num_shards)) for i in range(num_shards)
-  ]
+  if not FLAGS.display_only:
+    writers = [
+        tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
+                                    (i, num_shards)) for i in range(num_shards)
+    ]
   annotations = _load_images_info(images_info_file, classes)
 
   unique_ids = sorted(annotations.ImageID.unique())
