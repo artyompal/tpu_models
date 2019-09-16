@@ -327,10 +327,15 @@ def _create_tf_record_from_oid_annotations(
 
   random.shuffle(all_samples)
 
-  df = pd.concat([all_samples])
-  print('class statistics after:', Counter(df.LabelName.values))
+  print('gathering sample stats')
+  stats = None
+
+  for sample_df in tqdm(all_samples):
+    counter = Counter(sample_df.LabelName.values)
+    stats = stats + counter if stats else counter
+
+  print('class statistics after:', stats)
   print('total samples:', len(all_samples))
-  del df
 
   if FLAGS.display_only:
     return

@@ -1,13 +1,13 @@
 #!/bin/bash
 
-for i in human_parts {0..4}
+for PART in part_2 # human_parts # part_3 
 do
     echo "========================================================================"
-    echo "processing part $i"
+    echo processing $PART
 
-    PART="part_$i"
+    gsutil -m cp output/balanced_train_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
+    rm output/balanced_train_$PART*.tfrecord 
 
-    gsutil -m cp output/train_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
-    gsutil -m cp output/val_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
-    gsutil -m cp output/validation_$PART.json gs://ap_tpu_storage/converted/$PART/
+#     gsutil -m cp output/val_$PART*.tfrecord gs://ap_tpu_storage/converted/$PART/
+#     gsutil -m cp output/validation_$PART.json gs://ap_tpu_storage/converted/$PART/
 done
