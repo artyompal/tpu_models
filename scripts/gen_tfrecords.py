@@ -71,7 +71,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 #                       caption_annotations=None,
 #                       include_masks=False):
 
-def create_tf_example(group, image2idx):
+def create_tf_example(image_df, image2idx):
   """Converts image and annotations to a tf.Example proto.
 
   Args - OLD DESCRIPTION FOR THE REFERENCE, IGNORE IT.
@@ -102,7 +102,7 @@ def create_tf_example(group, image2idx):
   Raises:
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
-  image_id, image_df = group
+  image_id = image_df.ImageID.values[0]
 
   # some settings here
   bbox_annotations = True
@@ -306,9 +306,12 @@ def _create_tf_record_from_oid_annotations(
 
   random.shuffle(all_samples)
 
-  stats = Counter(sample_df.LabelName[0] for sample_df in all_samples)
+  stats = Counter(sample_df.LabelName.values[0] for sample_df in all_samples)
   print('class statistics:', stats)
   print('total samples:', len(all_samples))
+
+  if FLAGS.display_only:
+    return
 
   print('writing tfrecords')
 
