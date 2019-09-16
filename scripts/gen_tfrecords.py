@@ -280,18 +280,38 @@ def _create_tf_record_from_oid_annotations(
         tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
                                     (i, num_shards)) for i in range(num_shards)
     ]
-  annotations = _load_images_info(images_info_file, classes)
+  df = _load_images_info(images_info_file, classes)
 
-  unique_ids = sorted(annotations.ImageID.unique())
+  unique_ids = sorted(df.ImageID.unique())
   image2idx = {image: i for i, image in enumerate(unique_ids)}
   unique_ids_count = len(unique_ids)
 
 
   print('grouping annotations')
-  num_classes = annotations.LabelName.nunique()
+  num_classes = df.LabelName.nunique()
+
+
+  print('class statistics before:', Counter(df.LabelName.values))
+
+  # get class count column
+  counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
+  counts_df.columns = ['count']
+  print(counts_df)
+  df = df.join(counts_df, on='LabelName')
+  df = df.sort_values('count')
+  print(df)
+
+  # find the least frequent class for every sample
+  least_freq_cls_df = pd.DataFrame(df.groupby('ImageID').LabelName.first())
+  least_freq_cls_df.columns = ['LeastFreqClass']
+  print(least_freq_cls_df)
+  df = df.join(least_freq_cls_df, on='ImageID')
+  print(df)
+
+  # group by the least frequent class, then group by sample
   all_samples = []
 
-  for _, class_df in tqdm(annotations.groupby('LabelName'), total=num_classes):
+  for _, class_df in tqdm(df.groupby('LeastFreqClass'), total=num_classes):
     samples = [sample_df for _, sample_df in class_df.groupby('ImageID')]
 
     if len(samples) >= FLAGS.min_samples_per_class:
@@ -307,23 +327,24 @@ def _create_tf_record_from_oid_annotations(
 
   random.shuffle(all_samples)
 
-  stats = Counter(sample_df.LabelName.values[0] for sample_df in all_samples)
-  print('class statistics:', stats)
+  df = pd.concat([all_samples])
+  print('class statistics after:', Counter(df.LabelName.values))
   print('total samples:', len(all_samples))
+  del df
 
   if FLAGS.display_only:
     return
 
-  print('writing tfrecords')
 
+  print('writing tfrecords')
 
 #   pool = multiprocessing.Pool()
 #   for idx, tf_example in enumerate(tqdm(pool.imap(partial(create_tf_example, image2idx=image2idx),
-#                                                   annotations.groupby('ImageID')),
+#                                                   df.groupby('ImageID')),
 #                                    total=unique_ids_count)):
 #       writers[idx % num_shards].write(tf_example.SerializeToString())
 
-  # for idx, df in enumerate(tqdm(annotations.groupby('ImageID'), total=unique_ids_count)):
+  # for idx, df in enumerate(tqdm(df.groupby('ImageID'), total=unique_ids_count)):
   #     tf_example = create_tf_example(df, image2idx=image2idx)
   #     writers[idx % num_shards].write(tf_example.SerializeToString())
 
@@ -336,6 +357,7 @@ def _create_tf_record_from_oid_annotations(
 
   for writer in writers:
     writer.close()
+
 
   tf.logging.info('Finished writing')
 

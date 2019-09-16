@@ -31,11 +31,11 @@ if __name__ == '__main__':
         assert df.LabelName.nunique() >= classes_df.shape[0]
 
         counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
-        counts_df.columns = ['counts']
+        counts_df.columns = ['count']
         dprint(counts_df.head())
 
         counts_df = classes_df.join(counts_df, on='classes')
-        counts_df = counts_df.sort_values('counts')
+        counts_df = counts_df.sort_values('count')
         dprint(counts_df)
         counts_df.to_csv('output/classes_stats.csv', index=False)
 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     if args.gen_six_levels:
         parts = [0, 100, 200, 300, 400, 450]
-        counts_df = counts_df.drop(columns='counts')
+        counts_df = counts_df.drop(columns='count')
 
         for i, (part, part_end) in enumerate(zip(parts, parts[1:])):
             print(f'classes {part} to {part_end}')
