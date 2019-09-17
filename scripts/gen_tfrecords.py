@@ -32,7 +32,7 @@ import os
 import random
 import sys
 
-from collections import Counter
+from collections import Counter, defaultdict
 from functools import partial
 from typing import Any, Tuple
 
@@ -219,33 +219,31 @@ def create_tf_example(image_df, image2idx):
             dataset_util.float_list_feature(area),
     })
 
-    if include_masks:
-      feature_dict['image/object/mask'] = (
-          dataset_util.bytes_list_feature(encoded_mask_png))
-
-  # if caption_annotations:
-  #   captions = []
-  #   for caption_annotation in caption_annotations:
-  #     captions.append(caption_annotation['caption'].encode('utf8'))
-  #   feature_dict.update({
-  #       'image/caption':
-  #           dataset_util.bytes_list_feature(captions)})
+    # if include_masks:
+    #   feature_dict['image/object/mask'] = (
+    #       dataset_util.bytes_list_feature(encoded_mask_png))
 
   example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
   return example # key, example, num_annotations_skipped
 
+
+def get_classes_stats(df):
+  stats = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
+  stats.sort_values('ImageID', inplace=True, ascending=False)
+  imbalance =  stats.ImageID.values[0] / stats.ImageID.values[-1]
+  return imbalance, stats.to_dict()['ImageID']
 
 def _load_images_info(images_info_file, classes):
   df = pd.read_csv(images_info_file)
 
   if classes is not None:
     print('annotations before filtering:', df.shape)
-    print(df)
+    print(df.head())
 
     df = df[df.LabelName.isin(classes)]
 
     print('annotations after filtering:', df.shape)
-    print(df.LabelName.value_counts())
+    print(df.head())
 
   return df
 
@@ -254,8 +252,6 @@ def _create_tf_record_from_oid_annotations(
     image_dir,
     output_path,
     num_shards,
-    object_annotations_file=None,
-    caption_annotations_file=None,
     include_masks=False,
     classes=None):
   """Loads Open Images annotation csv files and converts to tf.Record format.
@@ -267,8 +263,6 @@ def _create_tf_record_from_oid_annotations(
     image_dir: Directory containing the image files.
     output_path: Path to output tfrecord file.
     num_shards: Number of output files to create.
-    object_annotations_file: JSON file containing bounding box annotations.
-    caption_annotations_file: JSON file containing caption annotations.
     include_masks: Whether to include instance segmentations masks
       (PNG encoded) in the result. default: False.
     classes: np.array of classes or None
@@ -291,41 +285,56 @@ def _create_tf_record_from_oid_annotations(
   num_classes = df.LabelName.nunique()
 
 
-  print('class statistics before:', Counter(df.LabelName.values))
+  print('total samples before:', df.ImageID.nunique())
+  print('class imbalance before:', get_classes_stats(df))
 
   # get class count column
   counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
   counts_df.columns = ['count']
+  counts_df.sort_values('count', inplace=True)
   print(counts_df)
   df = df.join(counts_df, on='LabelName')
   df = df.sort_values('count')
-  print(df)
+  print(df.head())
 
   # find the least frequent class for every sample
   least_freq_cls_df = pd.DataFrame(df.groupby('ImageID').LabelName.first())
   least_freq_cls_df.columns = ['LeastFreqClass']
-  print(least_freq_cls_df)
+  print(least_freq_cls_df.head())
   df = df.join(least_freq_cls_df, on='ImageID')
-  print(df)
+  print(df.head())
 
   # group by the least frequent class, then group by sample
   all_samples = []
+  samples_per_class = defaultdict(int)
 
-  for _, class_df in tqdm(df.groupby('LeastFreqClass'), total=num_classes):
+
+  for class_, class_df in tqdm(df.groupby('LeastFreqClass'), total=num_classes):
     samples = [sample_df for _, sample_df in class_df.groupby('ImageID')]
 
-    if len(samples) >= FLAGS.min_samples_per_class:
-      all_samples.extend(samples)
-    else:
-      quot = FLAGS.min_samples_per_class // len(samples)
-      mod = FLAGS.min_samples_per_class % len(samples)
+    def add_samples(samples_list):
+      all_samples.extend(samples_list)
 
-      all_samples.extend(samples * quot)
+      for sample in samples_list:
+          for label in sample.LabelName.values:
+              samples_per_class[label] += 1
+
+    samples_needed = max(FLAGS.min_samples_per_class - samples_per_class[class_], 0)
+
+    if len(samples) >= samples_needed:
+      # I always add all samples, maybe I shouldn't
+      add_samples(samples)
+    else:
+      quot = samples_needed // len(samples)
+      mod = samples_needed % len(samples)
+
+      add_samples(samples * quot)
 
       if mod:
-        all_samples.extend(random.sample(samples, mod))
+        add_samples(random.sample(samples, mod))
 
   random.shuffle(all_samples)
+
 
   print('gathering sample stats')
   stats = None
@@ -334,8 +343,9 @@ def _create_tf_record_from_oid_annotations(
     counter = Counter(sample_df.LabelName.values)
     stats = stats + counter if stats else counter
 
-  print('class statistics after:', stats)
-  print('total samples:', len(all_samples))
+  imbalance =  max(stats.values()) / min(stats.values())
+  print('class imbalance after:', imbalance, stats)
+  print('total samples after:', len(all_samples))
 
   if FLAGS.display_only:
     return
@@ -343,22 +353,21 @@ def _create_tf_record_from_oid_annotations(
 
   print('writing tfrecords')
 
-#   pool = multiprocessing.Pool()
-#   for idx, tf_example in enumerate(tqdm(pool.imap(partial(create_tf_example, image2idx=image2idx),
-#                                                   df.groupby('ImageID')),
-#                                    total=unique_ids_count)):
-#       writers[idx % num_shards].write(tf_example.SerializeToString())
-
-  # for idx, df in enumerate(tqdm(df.groupby('ImageID'), total=unique_ids_count)):
-  #     tf_example = create_tf_example(df, image2idx=image2idx)
+  # Multiprocessing implementation is actually slower because we're SSD-bound here,
+  # so more random reads we do, the poorer performance will be.
+  #
+  # pool = multiprocessing.Pool()
+  # for idx, tf_example in enumerate(tqdm(pool.imap(partial(create_tf_example, image2idx=image2idx),
+  #                                                 df.groupby('ImageID')),
+  #                                  total=unique_ids_count)):
   #     writers[idx % num_shards].write(tf_example.SerializeToString())
 
   for idx, sample_df in enumerate(tqdm(all_samples)):
     tf_example = create_tf_example(sample_df, image2idx=image2idx)
     writers[idx % num_shards].write(tf_example.SerializeToString())
 
-#   pool.close()
-#   pool.join()
+  # pool.close()
+  # pool.join()
 
   for writer in writers:
     writer.close()
@@ -398,8 +407,8 @@ def main(_):
 
 if __name__ == '__main__':
   classes_df = None
-  class_indices = None
-  class_labels = None
+  class_indices = dict()
+  class_labels = dict()
   classes = None
 
   tf.logging.set_verbosity(tf.logging.INFO)

@@ -12,7 +12,8 @@ set -e
 
 $PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
-    --min_samples_per_class=56391 \
+    --min_samples_per_class=100000 \
+    --display_only=True \
     --output_prefix output/balanced_train_human_parts \
     --image_info_file output/train_human_parts.csv \
     --classes_file output/classes_human_parts.csv \
@@ -41,4 +42,3 @@ do
         --classes_file output/classes_part_${i}_of_5.csv \
         --num_shards=10
 done
-
