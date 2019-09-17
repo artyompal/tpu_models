@@ -22,6 +22,13 @@ TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/balanced_train*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 
+gsutil -q stat $TRAIN_FILE_PATTERN
+if (( $? ))
+then
+    echo 'balanced train dataset is not found, using the normal dataset'
+    TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
+fi
+
 mkdir -p output
 gsutil cp $VAL_JSON_FILE output/
 LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
@@ -32,11 +39,10 @@ EVAL_SAMPLES=$(cat $LOCAL_VAL_JSON_FILE | grep width | wc -l)
 NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
 
-# we don't need this if we use CLR
-# if (( $NUM_CLASSES < 20 ))
-# then
-#     NUM_STEPS_PER_EVAL=2000
-# fi
+if (( $NUM_CLASSES < 20 ))
+then
+    NUM_STEPS_PER_EVAL=2000
+fi
 
 
 python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \

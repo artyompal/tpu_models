@@ -13,15 +13,14 @@ set -e
 $PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
     --min_samples_per_class=100000 \
-    --display_only=True \
     --output_prefix output/balanced_train_human_parts \
     --image_info_file output/train_human_parts.csv \
     --classes_file output/classes_human_parts.csv \
     --num_shards=10
 
-MIN_SAMPLES=(338 698 1489 8932 45938)
+MIN_SAMPLES=(338 0 0 0 100000)
 
-for i in {0..4}
+for i in 0 4
 do
     echo "========================================================================"
     echo "processing part $i"
@@ -33,10 +32,12 @@ do
 #         --classes_file output/classes_part_${i}_of_5.csv \
 #         --num_shards=1
 
-#         --display_only=True \
+    NUM_SAMPLES=${MIN_SAMPLES[i]}
+
+        # --display_only=True \
     $PYTHON gen_tfrecords.py \
         --image_dir data/train/ \
-        --min_samples_per_class=${MIN_SAMPLES[i]} \
+        --min_samples_per_class=$NUM_SAMPLES \
         --output_prefix output/balanced_train_part_$i \
         --image_info_file data/challenge-2019-train-detection-bbox.csv \
         --classes_file output/classes_part_${i}_of_5.csv \

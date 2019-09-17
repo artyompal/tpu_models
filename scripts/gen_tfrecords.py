@@ -268,12 +268,11 @@ def _create_tf_record_from_oid_annotations(
     classes: np.array of classes or None
   """
 
-  tf.logging.info('writing to the output path: %s', output_path)
   if not FLAGS.display_only:
-    writers = [
-        tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
-                                    (i, num_shards)) for i in range(num_shards)
-    ]
+    tf.logging.info('writing to the output path: %s', output_path)
+    writers = [tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
+                                           (i, num_shards)) for i in range(num_shards)]
+                                           
   df = _load_images_info(images_info_file, classes)
 
   unique_ids = sorted(df.ImageID.unique())
@@ -292,7 +291,6 @@ def _create_tf_record_from_oid_annotations(
   counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
   counts_df.columns = ['count']
   counts_df.sort_values('count', inplace=True)
-  print(counts_df)
   df = df.join(counts_df, on='LabelName')
   df = df.sort_values('count')
   print(df.head())
