@@ -6,8 +6,6 @@ if [ "$#" -ne 2 ]; then
 fi
 
 
-set -e
-
 PART=$1
 VERSION=$2
 
