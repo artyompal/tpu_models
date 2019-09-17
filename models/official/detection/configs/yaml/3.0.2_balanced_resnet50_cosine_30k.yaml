@@ -33,4 +33,4 @@ retinanet_parser:
 
 postprocess:
   max_total_size: 200
-  score_threshold: 0.02
+  score_threshold: 0.0

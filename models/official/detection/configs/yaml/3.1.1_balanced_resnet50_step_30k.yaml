@@ -2,11 +2,10 @@
 train:
   total_steps: 200000
   learning_rate:
-    type: 'cosine'
+    type: 'step'
     init_learning_rate: 0.08
-    total_steps: 20000
-    warmup_learning_rate: 0.000001
-    warmup_steps: 5000
+    learning_rate_levels: [0.008, 0.0008]
+    learning_rate_steps: [30000, 90000]
   checkpoint:
     path: 'gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602'
     prefix: 'resnet50/'
