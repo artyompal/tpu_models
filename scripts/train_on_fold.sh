@@ -1,13 +1,16 @@
 #!/bin/bash
 
-if [ "$#" -ne 2 ]; then
-    echo "usage: $0 dataset_code config_version "
+if [ "$#" -ne 3 ]; then
+    echo "usage: $0 dataset_code config_version fold_num"
     exit
 fi
 
 
+set -e
+
 PART=$1
 VERSION=$2
+FOLD_NUM=$3
 
 USE_TPU=True
 TPU_NAME=$HOSTNAME
@@ -16,16 +19,16 @@ PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
 
 MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART
-TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/balanced_train*.tfrecord
+TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train_${PART}_fold_${FOLD_NUM}*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 
-gsutil -q stat $TRAIN_FILE_PATTERN
-if (( $? ))
-then
-    echo 'balanced train dataset is not found, using the normal dataset'
-    TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
-fi
+# gsutil -q stat $TRAIN_FILE_PATTERN
+# if (( $? ))
+# then
+#     echo 'balanced train dataset is not found, using the normal dataset'
+#     TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train*.tfrecord
+# fi
 
 mkdir -p output
 gsutil cp $VAL_JSON_FILE output/
@@ -66,5 +69,5 @@ python ../models/official/detection/main.py --use_tpu=$USE_TPU --tpu=$TPU_NAME \
         }
     }" \
     --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml` \
-    2>&1 | tee -a ~/$VERSION-$PART.log
+    2>&1 | tee -a ~/$VERSION-$PART-fold_$FOLD_NUM.log
 
