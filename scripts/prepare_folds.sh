@@ -14,7 +14,7 @@ FOLD_NUM=$1
 
 $PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
-    --min_samples_per_class=100000 \
+    --min_samples_per_class=0 \
     --output_prefix output/train_human_parts_fold_${FOLD_NUM} \
     --image_info_file output/train_human_parts.csv \
     --classes_file output/classes_human_parts.csv \
@@ -22,7 +22,7 @@ $PYTHON gen_tfrecords.py \
     --fold_num=$FOLD_NUM
 
 gsutil -m cp output/train_human_parts_fold_${FOLD_NUM}*.tfrecord gs://ap_tpu_storage/converted/$PART/
-rm output/train_human_parts_fold_${FOLD_NUM}*.tfrecord  
+rm output/train_human_parts_fold_${FOLD_NUM}*.tfrecord
 
 
 MIN_SAMPLES=(338 0 0 0 0)

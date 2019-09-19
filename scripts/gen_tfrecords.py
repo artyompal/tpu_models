@@ -349,7 +349,6 @@ def _create_tf_record_from_oid_annotations(
   random.shuffle(all_samples)
 
 
-  print('gathering sample stats')
   stats, imbalance = get_classes_stats(all_samples)
   print('class imbalance after:', imbalance, stats)
   print('total samples after:', len(all_samples))
