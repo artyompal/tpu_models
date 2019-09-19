@@ -23,7 +23,7 @@ $PYTHON gen_tfrecords.py \
     --output_prefix output/train_human_parts_fold_$FOLD_NUM \
     --image_info_file output/train_human_parts_fold_$FOLD_NUM.csv \
     --classes_file output/classes_human_parts.csv \
-    --num_shards=10 \
+    --num_shards=10
 
 if [ $DISPLAY_ONLY -eq 0 ]
 then

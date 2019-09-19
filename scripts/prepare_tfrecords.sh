@@ -10,7 +10,10 @@ set -e
 #     --classes_file output/classes_human_parts.csv \
 #     --num_shards=1
 
+DISPLAY_ONLY=0
+
 $PYTHON gen_tfrecords.py \
+    --display_only=$DISPLAY_ONLY \
     --image_dir data/train/ \
     --min_samples_per_class=100000 \
     --output_prefix output/balanced_train_human_parts \
@@ -34,8 +37,8 @@ do
 
     NUM_SAMPLES=${MIN_SAMPLES[i]}
 
-        # --display_only=True \
     $PYTHON gen_tfrecords.py \
+        --display_only=$DISPLAY_ONLY \
         --image_dir data/train/ \
         --min_samples_per_class=$NUM_SAMPLES \
         --output_prefix output/balanced_train_part_$i \
