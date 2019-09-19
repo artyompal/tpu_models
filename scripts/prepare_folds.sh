@@ -27,7 +27,7 @@ $PYTHON gen_tfrecords.py \
 
 if [ $DISPLAY_ONLY -eq 0 ]
 then
-    gsutil -m cp output/train_human_parts_fold_$FOLD_NUM*.tfrecord gs://ap_tpu_storage/converted/$PART/
+    gsutil -m cp output/train_human_parts_fold_$FOLD_NUM*.tfrecord gs://ap_tpu_storage/converted/human_parts/
     rm output/train_human_parts_fold_$FOLD_NUM*.tfrecord
 fi
 
@@ -38,6 +38,7 @@ for i in {0..4}
 do
     echo "========================================================================"
     echo "processing part $i"
+    PART="part_$i"
 
     NUM_SAMPLES=${MIN_SAMPLES[i]}
 
