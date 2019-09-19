@@ -23,8 +23,6 @@ Example usage:
       --output_prefix="${OUTPUT_DIR/FILE_PREFIX}" \
       --num_shards=100
 """
-import collections
-
 import hashlib
 import io
 import multiprocessing
@@ -43,6 +41,7 @@ import numpy as np
 import pandas as pd
 import PIL.Image
 
+from sklearn.model_selection import KFold
 from tqdm import tqdm
 
 from research.object_detection.utils import dataset_util
@@ -59,6 +58,8 @@ flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 flags.DEFINE_integer('min_samples_per_class', 0, 'Minimum number of samples per class.')
 flags.DEFINE_boolean('display_only', False, 'Don\'t write any file, just show what will be done.')
+flags.DEFINE_integer('fold_num', -1, 'Current fold number.')
+flags.DEFINE_integer('total_folds_num', 5, 'Total folds number.')
 
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -236,6 +237,7 @@ def get_classes_stats(df):
 def _load_images_info(images_info_file, classes):
   df = pd.read_csv(images_info_file)
 
+  # filter by classes, if enabled
   if classes is not None:
     print('annotations before filtering:', df.shape)
     print(df.head())
@@ -244,6 +246,13 @@ def _load_images_info(images_info_file, classes):
 
     print('annotations after filtering:', df.shape)
     print(df.head())
+
+  # perform KFold split, if enabled
+  if FLAGS.fold_num != -1:
+    kf = KFold(n_splits=FLAGS.total_folds_num, shuffle=True, random_state=777)
+    splits = list(kf.split(df))
+    train_idx, _ = splits[FLAGS.fold_num]
+    df = df.iloc[train_idx]
 
   return df
 
@@ -272,7 +281,7 @@ def _create_tf_record_from_oid_annotations(
     tf.logging.info('writing to the output path: %s', output_path)
     writers = [tf.python_io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
                                            (i, num_shards)) for i in range(num_shards)]
-                                           
+
   df = _load_images_info(images_info_file, classes)
 
   unique_ids = sorted(df.ImageID.unique())
@@ -388,7 +397,6 @@ def main(_):
   class_indices = {row[1]: row[0] + 1 for row in classes_df.itertuples()}
   class_labels = {row[1]: row[2] for row in classes_df.itertuples()}
   classes = classes_df.classes.values
-
 
   directory = os.path.dirname(FLAGS.output_prefix)
   if not tf.gfile.IsDirectory(directory):

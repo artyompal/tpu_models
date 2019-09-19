@@ -20,7 +20,7 @@ git config --global --add difftool.prompt false
 git config --global user.name "artyom"
 git config --global user.email "artyom@artyom"
 
-pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow
+pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow scikit-learn
 pip install --user 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
 
 git clone git@github.com:artyompal/tpu_models.git
