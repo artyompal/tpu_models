@@ -21,7 +21,7 @@ $PYTHON gen_tfrecords.py \
     --output_prefix output/train_human_parts_fold_$FOLD_NUM \
     --image_info_file output/train_human_parts_fold_$FOLD_NUM.csv \
     --classes_file output/classes_human_parts.csv \
-    --num_shards=20 \
+    --num_shards=10 \
 
 gsutil -m cp output/train_human_parts_fold_${FOLD_NUM}*.tfrecord gs://ap_tpu_storage/converted/$PART/
 rm output/train_human_parts_fold_${FOLD_NUM}*.tfrecord

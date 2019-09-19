@@ -41,5 +41,5 @@ do
         --output_prefix output/balanced_train_part_$i \
         --image_info_file output/train_boxes.csv \
         --classes_file output/classes_part_${i}_of_5.csv \
-        --num_shards=10
+        --num_shards=20
 done
