@@ -170,7 +170,7 @@ def create_tf_example(image_df, image2idx):
       ymax.append(ann.YMax)
 
       # is_crowd.append(object_annotations['iscrowd'])
-      is_crowd.append(ann.IsGroupOf)
+      is_crowd.append(bool(ann.IsGroupOf))
 
       # category_id = int(object_annotations['category_id'])
       category_id = class_indices[ann.LabelName]
