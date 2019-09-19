@@ -19,9 +19,12 @@ git config --global diff.tool "vimdiff"
 git config --global --add difftool.prompt false
 git config --global user.name "artyom"
 git config --global user.email "artyom@artyom"
+git config --global alias.alias "config --get-regexp ^alias\."
+git config --global alias.lg "log --graph --pretty=format:'%Cgreen(%h) -%Cblue(%ci) %C(yellow)<%an>%d%Creset %s' --abbrev-commit"
 
-pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow scikit-learn
+pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow
 pip install --user 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
+pip3 install scikit-learn
 
 git clone git@github.com:artyompal/tpu_models.git
 sudo apt install -y mc htop python-tk

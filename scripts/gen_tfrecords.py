@@ -228,11 +228,16 @@ def create_tf_example(image_df, image2idx):
   return example # key, example, num_annotations_skipped
 
 
-def get_classes_stats(df):
-  stats = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
-  stats.sort_values('ImageID', inplace=True, ascending=False)
-  imbalance =  stats.ImageID.values[0] / stats.ImageID.values[-1]
-  return imbalance, stats.to_dict()['ImageID']
+def get_classes_stats(all_samples):
+  print('gathering sample stats')
+  stats = None
+
+  for sample_df in all_samples:
+    counter = Counter(sample_df.LabelName.values)
+    stats = stats + counter if stats else counter
+
+  imbalance = max(stats.values()) / min(stats.values())
+  return stats, imbalance
 
 def _load_images_info(images_info_file, classes):
   df = pd.read_csv(images_info_file)
@@ -293,8 +298,9 @@ def _create_tf_record_from_oid_annotations(
   num_classes = df.LabelName.nunique()
 
 
+  stats, imbalance = get_classes_stats([s for _, s in df.groupby('ImageID')])
+  print('class imbalance before:', imbalance, stats)
   print('total samples before:', df.ImageID.nunique())
-  print('class imbalance before:', get_classes_stats(df))
 
   # get class count column
   counts_df = pd.DataFrame(df.groupby('LabelName').ImageID.nunique())
@@ -344,13 +350,7 @@ def _create_tf_record_from_oid_annotations(
 
 
   print('gathering sample stats')
-  stats = None
-
-  for sample_df in tqdm(all_samples):
-    counter = Counter(sample_df.LabelName.values)
-    stats = stats + counter if stats else counter
-
-  imbalance =  max(stats.values()) / min(stats.values())
+  stats, imbalance = get_classes_stats(all_samples)
   print('class imbalance after:', imbalance, stats)
   print('total samples after:', len(all_samples))
 
