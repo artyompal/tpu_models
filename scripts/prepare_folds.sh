@@ -12,14 +12,16 @@ fi
 
 FOLD_NUM=$1
 
+gsutil cp gs://ap_tpu_storage/converted/train_human_parts_fold_$FOLD_NUM.csv output/
+gsutil cp gs://ap_tpu_storage/converted/train_boxes_fold_$FOLD_NUM.csv output/
+
 $PYTHON gen_tfrecords.py \
     --image_dir data/train/ \
     --min_samples_per_class=0 \
-    --output_prefix output/train_human_parts_fold_${FOLD_NUM} \
-    --image_info_file output/train_human_parts.csv \
+    --output_prefix output/train_human_parts_fold_$FOLD_NUM \
+    --image_info_file output/train_human_parts_fold_$FOLD_NUM.csv \
     --classes_file output/classes_human_parts.csv \
     --num_shards=20 \
-    --fold_num=$FOLD_NUM
 
 gsutil -m cp output/train_human_parts_fold_${FOLD_NUM}*.tfrecord gs://ap_tpu_storage/converted/$PART/
 rm output/train_human_parts_fold_${FOLD_NUM}*.tfrecord
@@ -38,11 +40,10 @@ do
     $PYTHON gen_tfrecords.py \
         --image_dir data/train/ \
         --min_samples_per_class=$NUM_SAMPLES \
-        --output_prefix output/train_part_${i}_fold_${FOLD_NUM} \
-        --image_info_file data/challenge-2019-train-detection-bbox.csv \
+        --output_prefix output/train_part_${i}_fold_$FOLD_NUM \
+        --image_info_file output/train_boxes_fold_$FOLD_NUM.csv \
         --classes_file output/classes_part_${i}_of_5.csv \
-        --num_shards=20 \
-        --fold_num=$FOLD_NUM
+        --num_shards=20
 
     gsutil -m cp output/train_part_${i}_fold_${FOLD_NUM}.tfrecord gs://ap_tpu_storage/converted/$PART/
     rm output/train_part_${i}_fold_${FOLD_NUM}.tfrecord

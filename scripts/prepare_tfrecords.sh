@@ -39,7 +39,7 @@ do
         --image_dir data/train/ \
         --min_samples_per_class=$NUM_SAMPLES \
         --output_prefix output/balanced_train_part_$i \
-        --image_info_file data/challenge-2019-train-detection-bbox.csv \
+        --image_info_file output/train_boxes.csv \
         --classes_file output/classes_part_${i}_of_5.csv \
         --num_shards=10
 done

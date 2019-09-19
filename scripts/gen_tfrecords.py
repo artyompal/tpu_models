@@ -41,7 +41,6 @@ import numpy as np
 import pandas as pd
 import PIL.Image
 
-from sklearn.model_selection import KFold
 from tqdm import tqdm
 
 from research.object_detection.utils import dataset_util
@@ -58,8 +57,6 @@ flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 flags.DEFINE_integer('min_samples_per_class', 0, 'Minimum number of samples per class.')
 flags.DEFINE_boolean('display_only', False, 'Don\'t write any file, just show what will be done.')
-flags.DEFINE_integer('fold_num', -1, 'Current fold number.')
-flags.DEFINE_integer('total_folds_num', 5, 'Total folds number.')
 
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -173,7 +170,7 @@ def create_tf_example(image_df, image2idx):
       ymax.append(ann.YMax)
 
       # is_crowd.append(object_annotations['iscrowd'])
-      is_crowd.append(False)
+      is_crowd.append(ann.IsGroupOf)
 
       # category_id = int(object_annotations['category_id'])
       category_id = class_indices[ann.LabelName]
@@ -242,7 +239,6 @@ def get_classes_stats(all_samples):
 def _load_images_info(images_info_file, classes):
   df = pd.read_csv(images_info_file)
 
-  # filter by classes, if enabled
   if classes is not None:
     print('annotations before filtering:', df.shape)
     print(df.head())
@@ -251,13 +247,6 @@ def _load_images_info(images_info_file, classes):
 
     print('annotations after filtering:', df.shape)
     print(df.head())
-
-  # perform KFold split, if enabled
-  if FLAGS.fold_num != -1:
-    kf = KFold(n_splits=FLAGS.total_folds_num, shuffle=True, random_state=777)
-    splits = list(kf.split(df))
-    train_idx, _ = splits[FLAGS.fold_num]
-    df = df.iloc[train_idx]
 
   return df
 
@@ -294,9 +283,7 @@ def _create_tf_record_from_oid_annotations(
   unique_ids_count = len(unique_ids)
 
 
-  print('grouping annotations')
   num_classes = df.LabelName.nunique()
-
 
   stats, imbalance = get_classes_stats([s for _, s in df.groupby('ImageID')])
   print('class imbalance before:', imbalance, stats)
