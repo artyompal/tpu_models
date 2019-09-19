@@ -18,7 +18,7 @@ TPU_NAME=$HOSTNAME
 PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
 
-MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART-$FOLD_NUM
+MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART-fold_$FOLD_NUM
 TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train_${PART}_fold_${FOLD_NUM}*.tfrecord
 EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
