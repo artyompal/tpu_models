@@ -52,8 +52,8 @@ do
 
     if [ $DISPLAY_ONLY -eq 0 ]
     then
-        gsutil -m cp output/train_part_${i}_fold_$FOLD_NUM.tfrecord gs://ap_tpu_storage/converted/$PART/
-        rm output/train_part_${i}_fold_$FOLD_NUM.tfrecord
+        gsutil -m cp output/train_part_${i}_fold_$FOLD_NUM*.tfrecord gs://ap_tpu_storage/converted/$PART/
+        rm output/train_part_${i}_fold_$FOLD_NUM*.tfrecord
     fi
 done
 
