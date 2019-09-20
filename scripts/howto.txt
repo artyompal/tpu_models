@@ -4,12 +4,14 @@ Create an instance:
 gcloud config set project tpu-test-246716
 ctpu up --tpu-size=v3-8 --machine-type n1-standard-4 --zone us-central1-a --name tpu3-1
 ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2  --zone us-central1-b --name tpu2-1
-ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2 --zone us-central1-b --name ptpu2-1 --preemptible
+ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2 --zone us-central1-b --name pre-2 --preemptible --disk-size-gb=120 --vm-only --noconf
 
 gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=tpu3-1,tpu3-2 --source-ranges=0.0.0.0/0
 
 
 Configure an instance:
+
+sudo apt install -y mc htop python-tk
 
 echo export PYTHONPATH=$HOME/tpu_models/models >>~/.bashrc
 export PYTHONPATH=$HOME/tpu_models/models
@@ -24,20 +26,22 @@ git config --global alias.lg "log --graph --pretty=format:'%Cgreen(%h) -%Cblue(%
 
 pip install --user Cython matplotlib opencv-python-headless pyyaml Pillow
 pip install --user 'git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI'
-pip3 install scikit-learn
 
 git clone git@github.com:artyompal/tpu_models.git
-sudo apt install -y mc htop python-tk
+cd tpu_models/scripts/
 
 
 Train a model:
 
-gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-b" "tpu2-1"
-gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3-2"
+gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-b" "new2-1"
+gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-a" "new3-1"
+gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-b" "pre-1"
 
 cd tpu_models/scripts/
 git pull
-./train_on_dataset.sh human_parts 2.0.4
+./train_on_fold.sh part_0 2.0.4 0
+./train_on_fold.sh human_parts 2.0.6 0
+
 ./train_on_dataset.sh human_parts 2.0.4
 ./train_on_dataset.sh part_4 2.0.4
 
@@ -56,7 +60,7 @@ chkp.print_tensors_in_checkpoint_file("/tmp/model.ckpt", tensor_name='', all_ten
 
 Monitor training:
 
-clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)'
+clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
