@@ -153,14 +153,23 @@ def main(argv):
   elif FLAGS.mode == 'train_and_eval':
     save_config(params, params.model_dir)
     executor.prepare_evaluation()
-    num_cycles = int(params.train.total_steps / params.eval.num_steps_per_eval)
 
-    # FIXME: this doesn't work with resuming
-    for cycle in range(num_cycles):
-      tf.logging.info('Start training cycle %d.' % cycle)
-      current_cycle_last_train_step = ((cycle + 1)
-                                       * params.eval.num_steps_per_eval)
-      executor.train(train_input_fn, current_cycle_last_train_step)
+    last_save = tf.train.latest_checkpoint(params.model_dir)
+    base_step = 0
+
+    if last_save is not None:
+        base_step = int(last_save.split('-')[-1])
+
+    # num_cycles = int(params.train.total_steps / params.eval.num_steps_per_eval)
+    # for cycle in range(num_cycles):
+
+    for step in range(base_step, params.train.total_steps, params.eval.num_steps_per_eval):
+      cycle = step // params.eval.num_steps_per_eval
+      tf.logging.info('Starting training from cycle %d (step %d).' % (cycle, step))
+
+      # current_cycle_last_train_step = ((cycle + 1)
+      #                                  * params.eval.num_steps_per_eval)
+      executor.train(train_input_fn, step + params.eval.num_steps_per_eval)
       executor.evaluate(
           eval_input_fn,
           params.eval.eval_samples // params.predict.predict_batch_size)

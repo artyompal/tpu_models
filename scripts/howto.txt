@@ -60,7 +60,7 @@ chkp.print_tensors_in_checkpoint_file("/tmp/model.ckpt", tensor_name='', all_ten
 
 Monitor training:
 
-clear ; cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
 
 tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
 
