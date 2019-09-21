@@ -9,15 +9,6 @@ VERSION="v2"
 
 
 PART=human_parts
-PREFIX=output/val_${VERSION}_$PART
-
-$PYTHON gen_tfrecords.py \
-    --image_dir data/validation/ \
-    --output_prefix $PREFIX \
-    --image_info_file output/validation_human_parts.csv \
-    --classes_file output/classes_human_parts.csv \
-    --num_shards=1
-
 PREFIX=output/train_${VERSION}_$PART
 
 $PYTHON gen_tfrecords.py \
@@ -41,15 +32,6 @@ do
     echo "processing part $i"
 
     PART=part_$i
-    PREFIX=output/val_${VERSION}_$PART
-
-    $PYTHON gen_tfrecords.py \
-        --image_dir data/validation/ \
-        --output_prefix $PREFIX \
-        --image_info_file output/validation_part_$i.csv \
-        --classes_file output/classes_part_${i}_of_5.csv \
-        --num_shards=1
-
     PREFIX=output/train_${VERSION}_$PART
 
     $PYTHON gen_tfrecords.py \
