@@ -8,7 +8,19 @@ DISPLAY_ONLY=0
 VERSION="v3"
 MIN_SAMPLES=(338 0 0 8000 100000)
 
-PREFIX=output/train_${VERSION}_human_parts
+
+PART=human_parts
+PREFIX=output/val_${VERSION}_$PART
+
+$PYTHON gen_tfrecords.py \
+    --image_dir data/validation/ \
+    --output_prefix $PREFIX \
+    --image_info_file output/validation_human_parts.csv \
+    --classes_file output/classes_human_parts.csv \
+    --num_shards=1
+
+PREFIX=output/train_${VERSION}_$PART
+
 $PYTHON gen_tfrecords.py \
     --display_only=$DISPLAY_ONLY \
     --image_dir data/train/ \
@@ -32,6 +44,15 @@ do
 
     NUM_SAMPLES=${MIN_SAMPLES[i]}
     PART=part_$i
+    PREFIX=output/val_${VERSION}_$PART
+
+    $PYTHON gen_tfrecords.py \
+        --image_dir data/validation/ \
+        --output_prefix $PREFIX \
+        --image_info_file output/validation_part_$i.csv \
+        --classes_file output/classes_part_${i}_of_5.csv \
+        --num_shards=1
+
     PREFIX=output/train_${VERSION}_$PART
 
     $PYTHON gen_tfrecords.py \
