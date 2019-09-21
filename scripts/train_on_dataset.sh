@@ -15,10 +15,20 @@ TPU_NAME=$HOSTNAME
 PYTHONPATH=$HOME/tpu_models/models
 STORAGE_BUCKET=gs://ap_tpu_storage
 
+VAL_DATASET=$PART
+REGEX="v[0-9]+_(.+)"
+
+if [[ $VAL_DATASET =~ $REGEX ]]
+then
+    VAL_DATASET="${BASH_REMATCH[1]}"
+fi
+
+echo "using validation dataset: $VAL_DATASET"
+
 MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART
 TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train_${PART}*.tfrecord
-EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/val*.tfrecord
-VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
+EVAL_FILE_PATTERN=${STORAGE_BUCKET}/converted/$VAL_DATASET/val*.tfrecord
+VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$VAL_DATASET/validation_$VAL_DATASET.json
 
 # gsutil -q stat $TRAIN_FILE_PATTERN
 # if (( $? ))
@@ -29,7 +39,7 @@ VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 
 mkdir -p output
 gsutil cp $VAL_JSON_FILE output/
-LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
+LOCAL_VAL_JSON_FILE="output/validation_$VAL_DATASET.json"
 
 
 NUM_STEPS_PER_EVAL=5000
