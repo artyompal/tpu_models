@@ -8,7 +8,9 @@ DISPLAY_ONLY=0
 VERSION="v2"
 
 
-PREFIX=output/train_${VERSION}_human_parts
+PART=human_parts
+PREFIX=output/train_${VERSION}_$PART
+
 $PYTHON gen_tfrecords.py \
     --display_only=$DISPLAY_ONLY \
     --image_dir data/train/ \
@@ -29,7 +31,8 @@ do
     echo "========================================================================"
     echo "processing part $i"
 
-    PREFIX=output/train_${VERSION}_part_$i
+    PART=part_$i
+    PREFIX=output/train_${VERSION}_$PART
 
     $PYTHON gen_tfrecords.py \
         --display_only=$DISPLAY_ONLY \

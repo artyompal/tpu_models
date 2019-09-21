@@ -8,21 +8,21 @@ DISPLAY_ONLY=0
 VERSION="v3"
 MIN_SAMPLES=(338 0 0 8000 100000)
 
-# PREFIX=output/train_${VERSION}_human_parts
-# $PYTHON gen_tfrecords.py \
-#     --display_only=$DISPLAY_ONLY \
-#     --image_dir data/train/ \
-#     --min_samples_per_class=100000 \
-#     --output_prefix $PREFIX \
-#     --image_info_file output/train_human_parts.csv \
-#     --classes_file output/classes_human_parts.csv \
-#     --num_shards=10
-#
-# if [ $DISPLAY_ONLY -eq 0 ]
-# then
-#     gsutil -m cp $PREFIX*.tfrecord gs://ap_tpu_storage/converted/${VERSION}_$PART/
-#     rm $PREFIX*.tfrecord
-# fi
+PREFIX=output/train_${VERSION}_human_parts
+$PYTHON gen_tfrecords.py \
+    --display_only=$DISPLAY_ONLY \
+    --image_dir data/train/ \
+    --min_samples_per_class=100000 \
+    --output_prefix $PREFIX \
+    --image_info_file output/train_human_parts.csv \
+    --classes_file output/classes_human_parts.csv \
+    --num_shards=10
+
+if [ $DISPLAY_ONLY -eq 0 ]
+then
+    gsutil -m cp $PREFIX*.tfrecord gs://ap_tpu_storage/converted/${VERSION}_$PART/
+    rm $PREFIX*.tfrecord
+fi
 
 
 for i in 0 3 4
@@ -31,7 +31,8 @@ do
     echo "processing part $i"
 
     NUM_SAMPLES=${MIN_SAMPLES[i]}
-    PREFIX=output/train_${VERSION}_part_$i
+    PART=part_$i
+    PREFIX=output/train_${VERSION}_$PART
 
     $PYTHON gen_tfrecords.py \
         --display_only=$DISPLAY_ONLY \
