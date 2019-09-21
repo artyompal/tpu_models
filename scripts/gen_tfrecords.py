@@ -285,7 +285,8 @@ def _create_tf_record_from_oid_annotations(
 
   num_classes = df.LabelName.nunique()
 
-  stats, imbalance = get_classes_stats([s for _, s in df.groupby('ImageID')])
+  stats, imbalance = get_classes_stats([s for _, s in tqdm(df.groupby('ImageID'),
+                                                           total=df.ImageID.nunique())])
   print('class imbalance before:', imbalance, stats)
   print('total samples before:', df.ImageID.nunique())
 
