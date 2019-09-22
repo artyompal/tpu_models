@@ -86,4 +86,4 @@ Training ImageNet:
 export DEPTH=101
 python resnet_main.py --tpu=$HOSTNAME --data_dir=gs://ap_tpu_storage/imagenet/ \
     --model_dir=gs://ap_tpu_storage/resnet$DEPTH/ --resnet_depth=$DEPTH \
-    --config_file=configs/cloud/v3-8.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
+    --config_file=configs/resnet$DEPTH.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
