@@ -79,3 +79,11 @@ Infer predictions:
 
 CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py predictions/1.0.3_human_parts.pkl best_models/sep_11/1.0.3-human_parts
 CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python inference.py predictions/1.1.0_part_0.pkl best_models/sep_11/1.1.0-part_0
+
+
+Training ImageNet:
+
+DEPTH=101
+python resnet_main.py --tpu=$HOSTNAME --data_dir=gs://ap_tpu_storage/imagenet/ \
+    --model_dir=gs://ap_tpu_storage/resnet$DEPTH/ --resnet_depth=$DEPTH \
+    --config_file=configs/cloud/v3-8.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
