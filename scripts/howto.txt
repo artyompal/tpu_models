@@ -62,7 +62,9 @@ Monitor training:
 
 cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
 cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+
 ls -ct1 | head -n 1; cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+ls -ct1 | head -n 1; cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+)' | uniq | sort -r | head -n 1
 
 
 Export a model:
