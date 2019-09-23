@@ -34,7 +34,7 @@ if '__main__' == __name__:
     parser.add_argument('result', help='result filename', type=str)
     parser.add_argument('filenames', help='submissions from partial datasets', nargs='*')
     args = parser.parse_args()
-    assert len(args.filenames) > 1
+    assert len(args.filenames) > 0
 
     if os.path.exists(args.result):
         print(args.result, 'already exists, exiting')
