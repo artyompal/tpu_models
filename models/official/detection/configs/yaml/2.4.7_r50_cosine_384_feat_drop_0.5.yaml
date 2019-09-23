@@ -2,27 +2,32 @@
 train:
   total_steps: 200000
   learning_rate:
+    type: 'cosine'
     init_learning_rate: 0.08
-    learning_rate_levels: [0.008, 0.0008]
-    learning_rate_steps: [45000, 90000]
+    total_steps: 10000
+    warmup_learning_rate: 0.000001
+    warmup_steps: 5000
   checkpoint:
-    path: 'gs://ap_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
-    prefix: 'backbone/'
-
+    path: 'gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602'
+    prefix: 'resnet50/'
 
 architecture:
   multilevel_features: 'nasfpn'
-  backbone: efficientnet-b5
+
+resnet:
+  resnet_depth: 50
 
 nasfpn:
-  fpn_feat_dims: 256
+  fpn_feat_dims: 300
   min_level: 3
   max_level: 7
   num_repeats: 5
   use_separable_conv: False
+  dropblock:
+    dropblock_keep_prob: 0.5
+    dropblock_size: 3
 
 retinanet_parser:
-  output_size: [456, 456]
   aug_scale_min: 0.8
   aug_scale_max: 1.2
   use_autoaugment: True
@@ -32,4 +37,3 @@ retinanet_parser:
 postprocess:
   max_total_size: 200
   score_threshold: 0.0
-

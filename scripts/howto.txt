@@ -69,16 +69,16 @@ Export a model:
 
 ./export_saved_model.sh human_parts 1.0.3 gs://ap_tpu_storage/saved/1.0.3-human_parts/model.ckpt-5000
 ./export_saved_model.sh part_0 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_0/model.ckpt-25000
-./export_saved_model.sh part_1 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_1/model.ckpt-25000
-./export_saved_model.sh part_2 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_2/model.ckpt-30000
-./export_saved_model.sh part_3 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_3/model.ckpt-30000
-./export_saved_model.sh part_4 1.1.0 gs://ap_tpu_storage/saved/1.1.0-part_4/model.ckpt-65000
 
 
 Infer predictions:
 
 CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python inference.py predictions/1.0.3_human_parts.pkl best_models/sep_11/1.0.3-human_parts
 CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python inference.py predictions/1.1.0_part_0.pkl best_models/sep_11/1.1.0-part_0
+
+for model_dir in ../best_models/sep_22/*fold_0*
+do ./docker_run.sh python inference.py $model_dir
+done
 
 
 Training ImageNet:
