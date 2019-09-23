@@ -42,6 +42,10 @@ def filter_trainable_variables(variables, frozen_variable_prefix):
   filtered_variables = [
       v for v in variables if not re.match(frozen_variable_prefix, v.name)
   ]
+
+  print('total variables:', len(variables), 'filtered variables:', len(filtered_variables),
+    'filtered vars ratio:', float(len(filtered_variables)) / len(variables))
+
   return filtered_variables
 
 
