@@ -39,11 +39,11 @@ gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-b" "pre-1
 
 cd tpu_models/scripts/
 git pull
+./train_on_dataset.sh human_parts 2.4.0
+./train_on_dataset.sh part_4 2.0.4
+
 ./train_on_fold.sh part_0 2.0.4 0
 ./train_on_fold.sh human_parts 2.0.6 0
-
-./train_on_dataset.sh human_parts 2.0.4
-./train_on_dataset.sh part_4 2.0.4
 
 
 Debug model:
@@ -61,8 +61,8 @@ chkp.print_tensors_in_checkpoint_file("/tmp/model.ckpt", tensor_name='', all_ten
 Monitor training:
 
 cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
-
-tensorboard --logdir gs://ap_tpu_storage/saved/1.0.0
+cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+ls -ct1 | head -n 1; cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
 
 
 Export a model:
@@ -87,3 +87,5 @@ export DEPTH=101
 python resnet_main.py --tpu=$HOSTNAME --data_dir=gs://ap_tpu_storage/imagenet/ \
     --model_dir=gs://ap_tpu_storage/resnet$DEPTH/ --resnet_depth=$DEPTH \
     --config_file=configs/resnet$DEPTH.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
+
+cat resnet152.log | grep 'Saving dict' | grep -v INFO
