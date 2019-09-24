@@ -21,7 +21,7 @@ $PYTHON gen_tfrecords.py \
 
 if [ $DISPLAY_ONLY -eq 0 ]
 then
-    gsutil -m cp $PREFIX*.tfrecord gs://ap_tpu_storage/converted/${VERSION}_$PART/
+    gsutil -m cp $PREFIX*.tfrecord gs://new_tpu_storage/converted/${VERSION}_$PART/
     rm $PREFIX*.tfrecord
 fi
 
@@ -44,7 +44,7 @@ do
 
     if [ $DISPLAY_ONLY -eq 0 ]
     then
-        gsutil -m cp $PREFIX*.tfrecord gs://ap_tpu_storage/converted/${VERSION}_$PART/
+        gsutil -m cp $PREFIX*.tfrecord gs://new_tpu_storage/converted/${VERSION}_$PART/
         rm $PREFIX*.tfrecord
     fi
 done

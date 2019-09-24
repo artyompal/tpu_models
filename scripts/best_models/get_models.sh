@@ -5,4 +5,4 @@ if [ "$#" -ne 2 ]; then
     exit
 fi
 
-gsutil -m cp -r gs://ap_tpu_storage/final/$2* $1
+gsutil -m cp -r gs://new_tpu_storage/final/$2* $1

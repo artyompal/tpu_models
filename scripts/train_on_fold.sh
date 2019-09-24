@@ -16,7 +16,7 @@ USE_TPU=True
 TPU_NAME=$HOSTNAME
 
 PYTHONPATH=$HOME/tpu_models/models
-STORAGE_BUCKET=gs://ap_tpu_storage
+STORAGE_BUCKET=gs://new_tpu_storage
 
 MODEL_DIR=${STORAGE_BUCKET}/saved/$VERSION-$PART-fold_$FOLD_NUM
 TRAIN_FILE_PATTERN=${STORAGE_BUCKET}/converted/$PART/train_${PART}_fold_${FOLD_NUM}*.tfrecord

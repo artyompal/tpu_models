@@ -15,7 +15,7 @@ STEP=$4
 
 PYTHONPATH=$HOME/tpu_models/models
 
-STORAGE_BUCKET=gs://ap_tpu_storage
+STORAGE_BUCKET=gs://new_tpu_storage
 CHECKPOINT_PATH=$STORAGE_BUCKET/saved/$VERSION-$PART-fold_$FOLD/model.ckpt-$STEP
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 gsutil cp $VAL_JSON_FILE output/
@@ -27,7 +27,7 @@ NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 
 python ../models/official/detection/export_saved_model.py \
     --checkpoint_path $CHECKPOINT_PATH \
-    --output_normalized_coordinates=True --export_dir gs://ap_tpu_storage/final/$VERSION-$PART-fold_$FOLD/ \
+    --output_normalized_coordinates=True --export_dir $STORAGE_BUCKET/final/$VERSION-$PART-fold_$FOLD/ \
     --params_override="{
         retinanet_head: {
             num_classes: $NUM_CLASSES,

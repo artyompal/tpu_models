@@ -13,7 +13,7 @@ USE_TPU=True
 TPU_NAME=$HOSTNAME
 
 PYTHONPATH=$HOME/tpu_models/models
-STORAGE_BUCKET=gs://ap_tpu_storage
+STORAGE_BUCKET=gs://new_tpu_storage
 
 VAL_DATASET=$PART
 REGEX="v[0-9]+_(.+)"

@@ -13,8 +13,8 @@ fi
 FOLD_NUM=$1
 DISPLAY_ONLY=0
 
-gsutil cp gs://ap_tpu_storage/converted/train_human_parts_fold_$FOLD_NUM.csv output/
-gsutil cp gs://ap_tpu_storage/converted/train_boxes_fold_$FOLD_NUM.csv output/
+gsutil cp gs://new_tpu_storage/converted/train_human_parts_fold_$FOLD_NUM.csv output/
+gsutil cp gs://new_tpu_storage/converted/train_boxes_fold_$FOLD_NUM.csv output/
 
 $PYTHON gen_tfrecords.py \
     --display_only=$DISPLAY_ONLY \
@@ -27,7 +27,7 @@ $PYTHON gen_tfrecords.py \
 
 if [ $DISPLAY_ONLY -eq 0 ]
 then
-    gsutil -m cp output/train_human_parts_fold_$FOLD_NUM*.tfrecord gs://ap_tpu_storage/converted/human_parts/
+    gsutil -m cp output/train_human_parts_fold_$FOLD_NUM*.tfrecord gs://new_tpu_storage/converted/human_parts/
     rm output/train_human_parts_fold_$FOLD_NUM*.tfrecord
 fi
 
@@ -53,7 +53,7 @@ do
 
     if [ $DISPLAY_ONLY -eq 0 ]
     then
-        gsutil -m cp output/train_part_${i}_fold_$FOLD_NUM*.tfrecord gs://ap_tpu_storage/converted/$PART/
+        gsutil -m cp output/train_part_${i}_fold_$FOLD_NUM*.tfrecord gs://new_tpu_storage/converted/$PART/
         rm output/train_part_${i}_fold_$FOLD_NUM*.tfrecord
     fi
 done
