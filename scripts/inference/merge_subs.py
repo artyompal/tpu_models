@@ -1,5 +1,6 @@
 #!/usr/bin/python3.6
 
+import multiprocessing
 import sys
 
 import numpy as np
@@ -78,25 +79,28 @@ subs_num = len(lines)
 rows_num = len(lines[0])
 thresh_iou = 0.3 # порог для IoU, используется для method = 1
 sigma = 0.5  #default
-thresh_score = 8e-4 # ниже какого скора отбрасываем !!!!не может быть ==0, так реализовано
+thresh_score = 1e-2 # 8e-4 # ниже какого скора отбрасываем !!!!не может быть ==0, так реализовано
 method = 2  #default
 soft_nms = True
 verbose = False
 
 
-res = []
-rows_src = []
-
-for i in tqdm(range(rows_num)):
+def process_line(lines):
     row = []
-    for j in range(subs_num):
-        (file_name, row_) = lines[j][i].strip().split(',')
+
+    for line in lines:
+        file_name, row_ = line.strip().split(',')
         row.extend(row_.split())
 
-    #new_row = apply_nms(row, thr_iou)
-    new_row = apply_nms(row, thresh_iou=thresh_iou,
-            soft_nms=soft_nms, sigma=sigma, thresh_score=thresh_score, method=method, verbose=verbose)
-    res.append(file_name + ',' + ' '.join(new_row) + '\n')
+    new_row = apply_nms(row, thresh_iou=thresh_iou, soft_nms=soft_nms, sigma=sigma,
+                        thresh_score=thresh_score, method=method, verbose=verbose)
+    return file_name + ',' + ' '.join(new_row) + '\n'
+
+
+
+pool = multiprocessing.Pool()
+lines = list(zip(*lines))
+res = list(tqdm(pool.imap(process_line, lines), total=rows_num))
 
 
 with open(sys.argv[1], 'w') as f_dest:
