@@ -22,12 +22,13 @@ def trim_line(s: str) -> str:
 
 if '__main__' == __name__:
     parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='force overwrite', action='store_true')
     parser.add_argument('result', help='result filename', type=str)
     parser.add_argument('filename', help='submission', type=str)
     parser.add_argument('min_conf', help='confidence threshold', type=float, default=0.02)
     args = parser.parse_args()
 
-    if os.path.exists(args.result):
+    if os.path.exists(args.result) and not args.f:
         print(args.result, 'already exists, exiting')
         sys.exit()
 
