@@ -79,7 +79,7 @@ subs_num = len(lines)
 rows_num = len(lines[0])
 thresh_iou = 0.3 # порог для IoU, используется для method = 1
 sigma = 0.5  #default
-thresh_score = 1e-2 # 8e-4 # ниже какого скора отбрасываем !!!!не может быть ==0, так реализовано
+thresh_score = 2e-2 # 8e-4 # ниже какого скора отбрасываем !!!!не может быть ==0, так реализовано
 method = 2  #default
 soft_nms = True
 verbose = False

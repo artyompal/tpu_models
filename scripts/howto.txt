@@ -36,6 +36,7 @@ Train a model:
 gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-b" "new2-1"
 gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-a" "new3-1"
 gcloud beta compute --project "tpuproj-245020" ssh --zone "us-central1-b" "pre-1"
+gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3-1"
 
 cd tpu_models/scripts/
 git pull

@@ -1,6 +1,7 @@
 *.csv
 *.csv.gz
 *.pkl
+*.zip
 output/
 data
 best_models/
