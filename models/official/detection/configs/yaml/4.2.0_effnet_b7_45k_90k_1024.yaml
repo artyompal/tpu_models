@@ -7,14 +7,13 @@ train:
     learning_rate_levels: [0.008, 0.0008]
     learning_rate_steps: [45000, 90000]
   checkpoint:
-    path: 'gs://cloud-tpu-artifacts/resnet/resnet-nhwc-2018-10-14/model.ckpt-112602'
-    prefix: 'resnet50/'
+    path: 'gs://new_tpu_storage/pretrained/efficientnet-b7/model.ckpt'
+    prefix: 'backbone/'
+  frozen_variable_prefix: r'efficientnet-b\d\/blocks_([0-9]|1[0-4])\/conv2d'
 
 architecture:
   multilevel_features: 'nasfpn'
-
-resnet:
-  resnet_depth: 50
+  backbone: 'efficientnet-b7'
 
 nasfpn:
   fpn_feat_dims: 256
