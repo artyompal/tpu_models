@@ -1,0 +1,40 @@
+
+train:
+  total_steps: 200000
+  learning_rate:
+    type: 'step'
+    init_learning_rate: 0.08
+    learning_rate_levels: [0.008, 0.0008]
+    learning_rate_steps: [45000, 90000]
+  checkpoint:
+    path: 'gs://new_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
+    prefix: 'backbone/'
+
+  # freeze blocks 0 - 14
+  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-4]))\/(se\/)?(depthwise_)?conv2d'
+
+  # support for TPUv2
+  train_batch_size: 32
+
+architecture:
+  multilevel_features: 'nasfpn'
+  backbone: 'efficientnet-b5'
+
+nasfpn:
+  fpn_feat_dims: 350
+  min_level: 3
+  max_level: 7
+  num_repeats: 5
+  use_separable_conv: False
+
+retinanet_parser:
+  output_size: [1024, 1024]
+  aug_scale_min: 0.8
+  aug_scale_max: 1.2
+  use_autoaugment: True
+  autoaugment_policy_name: 'v3'
+  max_num_instances: 200
+
+postprocess:
+  max_total_size: 200
+  score_threshold: 0.0
