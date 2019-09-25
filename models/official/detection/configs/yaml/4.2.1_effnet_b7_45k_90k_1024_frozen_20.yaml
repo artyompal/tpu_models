@@ -11,7 +11,7 @@ train:
     prefix: 'backbone/'
 
   # freeze blocks 0 - 14
-  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-4]))\/(se\/)?(depthwise_)?conv2d'
+  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-9]))\/(se\/)?(depthwise_)?conv2d'
 
 architecture:
   multilevel_features: 'nasfpn'

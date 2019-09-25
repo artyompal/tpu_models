@@ -9,7 +9,12 @@ train:
   checkpoint:
     path: 'gs://new_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
     prefix: 'backbone/'
-  frozen_variable_prefix: r'efficientnet-b\d\/blocks_([0-9]|1[0-4])\/conv2d'
+
+  # freeze blocks 0 - 14
+  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-4]))\/(se\/)?(depthwise_)?conv2d'
+
+  # support for TPUv2
+  train_batch_size: 48
 
 architecture:
   multilevel_features: 'nasfpn'

@@ -55,7 +55,7 @@ def restore_from_checkpoint(self):
 from tensorflow.python.tools import inspect_checkpoint as chkp
 
 # print all tensors in checkpoint file
-chkp.print_tensors_in_checkpoint_file("/tmp/model.ckpt", tensor_name='', all_tensors=True)
+chkp.print_tensors_in_checkpoint_file('/tmp/model.ckpt', tensor_name='', all_tensors=True)
 
 
 Monitor training:
