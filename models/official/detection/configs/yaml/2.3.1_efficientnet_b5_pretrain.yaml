@@ -6,7 +6,7 @@ train:
     learning_rate_levels: [0.008, 0.0008]
     learning_rate_steps: [45000, 90000]
   checkpoint:
-    path: 'gs://ap_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
+    path: 'gs://new_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
     prefix: 'backbone/'
 
 

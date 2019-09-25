@@ -9,7 +9,7 @@ train:
     warmup_learning_rate: 0.000001
     warmup_steps: 5000
   checkpoint:
-    path: 'gs://ap_tpu_storage/saved/2.3.3-part_4/model.ckpt-50300'
+    path: 'gs://new_tpu_storage/saved/2.3.3-part_4/model.ckpt-50300'
     prefix: 'backbone/'
 
 architecture:

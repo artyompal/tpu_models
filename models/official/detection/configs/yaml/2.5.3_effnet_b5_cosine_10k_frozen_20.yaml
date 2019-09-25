@@ -8,7 +8,7 @@ train:
     warmup_learning_rate: 0.000001
     warmup_steps: 5000
   checkpoint:
-    path: 'gs://ap_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
+    path: 'gs://new_tpu_storage/pretrained/efficientnet-b5/model.ckpt'
     prefix: 'backbone/'
   frozen_variable_prefix: r'efficientnet-b\d\/blocks_([0-9]|1[0-9])\/conv2d'
 
