@@ -14,7 +14,7 @@ train:
   frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-4]))\/(se\/)?(depthwise_)?conv2d'
 
   # support for TPUv2
-  train_batch_size: 48
+  train_batch_size: 32
 
 architecture:
   multilevel_features: 'nasfpn'
