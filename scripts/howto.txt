@@ -69,8 +69,8 @@ ls -ct1 | head -n 1; cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+)' | 
 
 Export a model:
 
-./export_saved_model.sh human_parts 1.0.3 gs://new_tpu_storage/saved/1.0.3-human_parts/model.ckpt-5000
-./export_saved_model.sh part_0 1.1.0 gs://new_tpu_storage/saved/1.1.0-part_0/model.ckpt-25000
+./export_saved_model.sh human_parts 1.0.3 5000
+./export_saved_model.sh part_0 1.1.0 25000
 
 
 Infer predictions:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -ne 3 ]; then
-    echo "usage: $0 dataset_code config_version checkpoint_path "
+    echo "usage: $0 dataset_code config_version step"
     exit
 fi
 
@@ -10,11 +10,12 @@ set -e
 
 PART=$1
 VERSION=$2
-CHECKPOINT_PATH=$3
+STEP=$3
 
 PYTHONPATH=$HOME/tpu_models/models
 
 STORAGE_BUCKET=gs://new_tpu_storage
+CHECKPOINT_PATH=$STORAGE_BUCKET/saved/$VERSION-$PART/model.ckpt-$STEP
 VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
 gsutil cp $VAL_JSON_FILE output/
 LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
