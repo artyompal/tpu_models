@@ -10,8 +10,8 @@ train:
     path: 'gs://new_tpu_storage/pretrained/efficientnet-b7/model.ckpt'
     prefix: 'backbone/'
 
-  # freeze blocks 0 - 19
-  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|1[0-9]))\/(se\/)?(depthwise_)?conv2d'
+  # freeze blocks 0 - 25
+  frozen_variable_prefix: r'efficientnet-b\d\/(stem|blocks_(\d|[12][0-4]))\/(se\/)?(depthwise_)?conv2d'
 
 architecture:
   multilevel_features: 'nasfpn'
