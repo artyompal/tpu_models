@@ -7,6 +7,9 @@ train:
     learning_rate_levels: [0.008, 0.0008]
     learning_rate_steps: [45000, 90000]
 
+  # support for TPUv2
+  train_batch_size: 32
+
 architecture:
   multilevel_features: 'nasfpn'
 
