@@ -16,6 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('desc_file', help='description file, csv format', type=str)
     parser.add_argument('predict_file', help='predictions file, csv format', type=str)
     parser.add_argument('--min_conf', help='minimum confidence level', default=0.9, type=float)
+    parser.add_argument('--classes', help='classes table', default=None, type=str)
     args = parser.parse_args()
 
     df = pd.read_csv(args.desc_file, index_col=None)
@@ -24,12 +25,22 @@ if __name__ == '__main__':
     pred_df = pd.read_csv(args.predict_file, index_col=None)
     new_ids, new_labels, new_coords = [], [], []
 
+    classes = None
+    if args.classes is not None:
+        classes = set(pd.read_csv(args.classes, header=None).iloc[:, 0].values)
+        print('classes:', len(classes), classes)
+
     for row in tqdm(pred_df.itertuples(), total=pred_df.shape[0]):
         items = np.array(row.PredictionString.split())
         items = items.reshape(-1, 6)
 
         for pred in items:
             label, conf = pred[0], float(pred[1])
+
+            if classes is not None:
+                if label not in classes:
+                    continue
+                
             if conf > args.min_conf:
                 coords = np.array(list(map(float, pred[2:])))
 
