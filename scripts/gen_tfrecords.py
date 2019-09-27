@@ -51,6 +51,7 @@ flags.DEFINE_boolean('include_masks', False,
                      'Whether to include instance segmentations masks '
                      '(PNG encoded) in the result. default: False.')
 flags.DEFINE_string('image_dir', '', 'Directory containing images.')
+flags.DEFINE_string('image_dir2', '', 'Additional directory with images.')
 flags.DEFINE_string('image_info_file', '', 'File containing image information')
 flags.DEFINE_string('classes_file', '', 'CSV file with allowed classes')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
@@ -105,11 +106,13 @@ def create_tf_example(image_df, image2idx):
   # some settings here
   bbox_annotations = True
   include_masks = False
-  image_dir = FLAGS.image_dir
 
   filename = image_id + '.jpg'
 
   full_path = os.path.join(image_dir, filename)
+  if not os.path.exists(full_path):
+    full_path = os.path.join(FLAGS.image_dir2, filename)
+
   with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
 

@@ -14,8 +14,9 @@ PREFIX=output/train_${VERSION}_$PART
 $PYTHON gen_tfrecords.py \
     --display_only=$DISPLAY_ONLY \
     --image_dir data/train/ \
+    --image_dir2 data/test/ \
     --output_prefix $PREFIX \
-    --image_info_file output/train_human_parts.csv \
+    --image_info_file output/train_human_parts_with_pseudo_labels.csv \
     --classes_file output/classes_human_parts.csv \
     --num_shards=10
 
@@ -37,8 +38,9 @@ do
     $PYTHON gen_tfrecords.py \
         --display_only=$DISPLAY_ONLY \
         --image_dir data/train/ \
+        --image_dir2 data/test/ \
         --output_prefix $PREFIX \
-        --image_info_file output/train_boxes.csv \
+        --image_info_file output/train_boxes_with_pseudo_labels.csv \
         --classes_file output/classes_part_${i}_of_5.csv \
         --num_shards=20
 
