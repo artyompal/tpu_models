@@ -109,7 +109,7 @@ def create_tf_example(image_df, image2idx):
 
   filename = image_id + '.jpg'
 
-  full_path = os.path.join(image_dir, filename)
+  full_path = os.path.join(FLAGS.image_dir, filename)
   if not os.path.exists(full_path):
     full_path = os.path.join(FLAGS.image_dir2, filename)
 
@@ -234,7 +234,7 @@ def get_classes_stats(all_samples):
 
   for sample_df in all_samples:
     counter = Counter(sample_df.LabelName.values)
-    stats = stats + counter if stats else counter
+    stats = stats + counter if stats else counter # type: ignore
 
   imbalance = max(stats.values()) / min(stats.values())
   return stats, imbalance
@@ -255,7 +255,6 @@ def _load_images_info(images_info_file, classes):
 
 def _create_tf_record_from_oid_annotations(
     images_info_file,
-    image_dir,
     output_path,
     num_shards,
     include_masks=False,
@@ -266,7 +265,6 @@ def _create_tf_record_from_oid_annotations(
     images_info_file: CSV file containing image info. The number of tf.Examples
       in the output tf Record files is exactly equal to the number of image info
       entries in this file. This can be any of train/val annotation csv files.
-    image_dir: Directory containing the image files.
     output_path: Path to output tfrecord file.
     num_shards: Number of output files to create.
     include_masks: Whether to include instance segmentations masks
@@ -394,7 +392,6 @@ def main(_):
 
   _create_tf_record_from_oid_annotations(
       images_info_file,
-      FLAGS.image_dir,
       FLAGS.output_prefix,
       FLAGS.num_shards,
       include_masks=FLAGS.include_masks,
