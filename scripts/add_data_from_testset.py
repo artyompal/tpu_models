@@ -40,7 +40,7 @@ if __name__ == '__main__':
             if classes is not None:
                 if label not in classes:
                     continue
-                
+
             if conf > args.min_conf:
                 coords = np.array(list(map(float, pred[2:])))
 
@@ -48,16 +48,24 @@ if __name__ == '__main__':
                 new_labels.append(label)
                 new_coords.append(coords)
 
-    new_coords = np.concatenate(new_coords).T
+    new_coords = np.vstack(new_coords).T
+    print('new_coords', new_coords.shape) # type: ignore
+
+    xmin, ymin, xmax, ymax = new_coords[0], new_coords[1], new_coords[2], new_coords[3]
+    assert xmin.shape == (len(new_ids),)
+    assert xmax.shape == (len(new_ids),)
+    assert ymin.shape == (len(new_ids),)
+    assert ymax.shape == (len(new_ids),)
+
     new_df = pd.DataFrame({
         'ImageID': new_ids,
         'Source': 'pseudolabels',
         'LabelName': new_labels,
         'Confidence': 1,
-        'XMin': new_coords[0],
-        'XMax': new_coords[1],
-        'YMin': new_coords[2],
-        'YMax': new_coords[3],
+        'XMin': xmin,
+        'XMax': xmax,
+        'YMin': ymin,
+        'YMax': ymax,
         'IsOccluded': 0,
         'IsTruncated': 0,
         'IsGroupOf': 0,
