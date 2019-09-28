@@ -17,7 +17,7 @@ resnet:
   resnet_depth: 152
 
 nasfpn:
-  fpn_feat_dims: 300
+  fpn_feat_dims: 256
   min_level: 3
   max_level: 7
   num_repeats: 5
