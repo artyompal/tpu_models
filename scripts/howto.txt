@@ -41,6 +41,7 @@ gcloud beta compute --project "tpu-test-246716" ssh --zone "us-central1-a" "tpu3
 
 cd tpu_models/scripts/
 git pull
+./train_on_dataset.sh part_2 4.8.
 ./train_on_dataset.sh part_4 4.5.0
 ./train_on_dataset.sh human_parts 2.4.0
 
@@ -91,3 +92,5 @@ python resnet_main.py --tpu=$HOSTNAME --data_dir=gs://new_tpu_storage/imagenet/ 
     --config_file=configs/resnet$DEPTH.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
 
 cat resnet152.log | grep 'Saving dict' | grep -v INFO
+cat resnet200.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19- | sort -r | head
+cat resnet200.log | grep `cat resnet200.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19 | sort -r | head -n 1` | grep Saving | grep INFO
