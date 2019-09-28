@@ -1,0 +1,36 @@
+
+train:
+  total_steps: 200000
+  learning_rate:
+    type: 'step'
+    init_learning_rate: 0.08
+    learning_rate_levels: [0.008, 0.0008]
+    learning_rate_steps: [45000, 90000]
+
+architecture:
+  multilevel_features: 'nasfpn'
+
+resnet:
+  resnet_depth: 200
+
+nasfpn:
+  fpn_feat_dims: 256
+  min_level: 3
+  max_level: 7
+  num_repeats: 5
+  use_separable_conv: False
+  dropblock:
+    dropblock_keep_prob: 0.9
+    dropblock_size: 3
+
+retinanet_parser:
+  output_size: [640, 640]
+  aug_scale_min: 0.8
+  aug_scale_max: 1.2
+  use_autoaugment: True
+  autoaugment_policy_name: 'v1'
+  max_num_instances: 200
+
+postprocess:
+  max_total_size: 200
+  score_threshold: 0.0
