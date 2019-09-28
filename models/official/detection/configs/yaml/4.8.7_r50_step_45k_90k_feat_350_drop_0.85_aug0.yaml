@@ -17,21 +17,21 @@ resnet:
   resnet_depth: 50
 
 nasfpn:
-  fpn_feat_dims: 300
+  fpn_feat_dims: 350
   min_level: 3
   max_level: 7
   num_repeats: 5
   use_separable_conv: False
   dropblock:
-    dropblock_keep_prob: 0.9
+    dropblock_keep_prob: 0.85
     dropblock_size: 3
 
 retinanet_parser:
-  output_size: [1024, 1024]
+  output_size: [640, 640]
   aug_scale_min: 0.8
   aug_scale_max: 1.2
   use_autoaugment: True
-  autoaugment_policy_name: 'v2'
+  autoaugment_policy_name: 'v0'
   max_num_instances: 200
 
 postprocess:
