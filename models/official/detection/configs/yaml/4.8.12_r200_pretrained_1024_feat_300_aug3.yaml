@@ -7,14 +7,14 @@ train:
     learning_rate_levels: [0.008, 0.0008]
     learning_rate_steps: [45000, 90000]
   checkpoint:
-    path: 'gs://new_tpu_storage/resnet101/model.ckpt-146367'
-    prefix: 'resnet101/'
+    path: 'gs://new_tpu_storage/resnet200/model.ckpt-95076'
+    prefix: 'resnet200/'
 
 architecture:
   multilevel_features: 'nasfpn'
 
 resnet:
-  resnet_depth: 101
+  resnet_depth: 200
 
 nasfpn:
   fpn_feat_dims: 300
@@ -31,7 +31,7 @@ retinanet_parser:
   aug_scale_min: 0.7
   aug_scale_max: 1.3
   use_autoaugment: True
-  autoaugment_policy_name: 'v2'
+  autoaugment_policy_name: 'v3'
   max_num_instances: 200
 
 postprocess:
