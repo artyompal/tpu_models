@@ -5,7 +5,7 @@ train:
     type: 'step'
     init_learning_rate: 0.08
     learning_rate_levels: [0.008, 0.0008]
-    learning_rate_steps: [45000, 90000]
+    learning_rate_steps: [45000, 60000]
   checkpoint:
     path: 'gs://new_tpu_storage/resnet200/model.ckpt-95076'
     prefix: 'resnet200/'
