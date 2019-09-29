@@ -47,6 +47,8 @@ from research.object_detection.utils import dataset_util
 from research.object_detection.utils import label_map_util
 
 import tensorflow as tf
+
+
 flags.DEFINE_boolean('include_masks', False,
                      'Whether to include instance segmentations masks '
                      '(PNG encoded) in the result. default: False.')
@@ -54,6 +56,7 @@ flags.DEFINE_string('image_dir', '', 'Directory containing images.')
 flags.DEFINE_string('image_dir2', '', 'Additional directory with images.')
 flags.DEFINE_string('image_info_file', '', 'File containing image information')
 flags.DEFINE_string('classes_file', '', 'CSV file with allowed classes')
+flags.DEFINE_string('classes_replace_table', '', 'CSV file with class mapping')
 flags.DEFINE_string('output_prefix', '', 'Path to output file')
 flags.DEFINE_integer('num_shards', 10, 'Number of shards for output file.')
 flags.DEFINE_integer('min_samples_per_class', 0, 'Minimum number of samples per class.')
@@ -62,13 +65,6 @@ flags.DEFINE_boolean('display_only', False, 'Don\'t write any file, just show wh
 FLAGS = flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
 
-
-# def create_tf_example(image,
-#                       image_dir,
-#                       bbox_annotations=None,
-#                       category_index=None,
-#                       caption_annotations=None,
-#                       include_masks=False):
 
 def create_tf_example(image_df, image2idx):
   """Converts image and annotations to a tf.Example proto.
@@ -154,19 +150,6 @@ def create_tf_example(image_df, image2idx):
     # encoded_mask_png = []
 
     for ann in image_df.itertuples():
-      # (x, y, width, height) = tuple(object_annotations['bbox'])
-      # if width <= 0 or height <= 0:
-      #   num_annotations_skipped += 1
-      #   continue
-      # if x + width > image_width or y + height > image_height:
-      #   num_annotations_skipped += 1
-      #   continue
-
-      # xmin.append(float(x) / image_width)
-      # xmax.append(float(x + width) / image_width)
-      # ymin.append(float(y) / image_height)
-      # ymax.append(float(y + height) / image_height)
-
       xmin.append(ann.XMin)
       xmax.append(ann.XMax)
       ymin.append(ann.YMin)

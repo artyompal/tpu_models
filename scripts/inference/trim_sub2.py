@@ -13,20 +13,18 @@ def trim_line(s: str) -> str:
         return s
 
     values = s.split()
-    res = []
 
-    for i in range(0, len(values), 6):
-        if i < 6 or float(values[i + 1]) >= args.min_conf:
-            res.extend(values[i : i + 6])
+    for i in range(2, len(values), 6):
+        for j in range(4):
+            values[i + j] = values[i + j][:-1]
 
-    return ' '.join(res) + '\n'
+    return ' '.join(values) + '\n'
 
 if '__main__' == __name__:
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', help='force overwrite', action='store_true')
     parser.add_argument('result', help='result filename', type=str)
     parser.add_argument('filename', help='submission', type=str)
-    parser.add_argument('min_conf', help='confidence threshold', type=float, default=0.02)
     args = parser.parse_args()
 
     if os.path.exists(args.result) and not args.f:
