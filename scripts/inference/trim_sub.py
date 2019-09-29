@@ -26,7 +26,7 @@ if '__main__' == __name__:
     parser.add_argument('-f', help='force overwrite', action='store_true')
     parser.add_argument('result', help='result filename', type=str)
     parser.add_argument('filename', help='submission', type=str)
-    parser.add_argument('min_conf', help='confidence threshold', type=float, default=0.02)
+    parser.add_argument('min_conf', help='confidence threshold', type=float)
     args = parser.parse_args()
 
     if os.path.exists(args.result) and not args.f:
