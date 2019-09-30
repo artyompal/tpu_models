@@ -16,9 +16,20 @@ PYTHONPATH=$HOME/tpu_models/models
 
 STORAGE_BUCKET=gs://new_tpu_storage
 CHECKPOINT_PATH=$STORAGE_BUCKET/saved/$VERSION-$PART/model.ckpt-$STEP
-VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$PART/validation_$PART.json
+
+VAL_DATASET=$PART
+REGEX="v[0-9]+_(.+)"
+
+if [[ $VAL_DATASET =~ $REGEX ]]
+then
+    VAL_DATASET="${BASH_REMATCH[1]}"
+fi
+
+echo "using validation dataset: $VAL_DATASET"
+
+VAL_JSON_FILE=${STORAGE_BUCKET}/converted/$VAL_DATASET/validation_$VAL_DATASET.json
 gsutil cp $VAL_JSON_FILE output/
-LOCAL_VAL_JSON_FILE="output/validation_$PART.json"
+LOCAL_VAL_JSON_FILE="output/validation_$VAL_DATASET.json"
 
 NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 ((NUM_CLASSES++)) # add background class
