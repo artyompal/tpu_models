@@ -1,0 +1,80 @@
+
+# ResNetXXX models on part_2
+
+- dataset: v2_part_2
+  version: 4.8.4
+  step: 115900
+  resolution: 1024
+
+- dataset: v2_part_2
+  version: 4.8.5
+  step: 133400
+  resolution: 640
+
+- dataset: v2_part_2
+  version: 4.8.6
+  step: 115000
+  resolution: 640
+
+- dataset: v2_part_2
+  version: 4.8.8
+  step: 64000
+  resolution: 640
+
+# part_3
+
+- dataset: v2_part_3
+  version: 4.8.5
+  step: 130000
+  resolution: 640
+
+- dataset: v2_part_3
+  version: 4.8.9
+  step: 115000
+  resolution: 640
+
+
+# ResNetXXX models on part_0
+
+- dataset: v2_part_0
+  version: 4.9.0
+  step: 50000
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.1
+  step: 75000
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.3
+  step: 51500
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.4
+  step: 53700
+  resolution: 640
+
+
+# part_1
+
+- dataset: v2_part_1
+  version: 4.9.0
+  step: 50000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.1
+  step: 80000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.2
+  step: 55000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.3
+  step: 56500
+  resolution: 640
