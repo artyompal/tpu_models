@@ -24,11 +24,11 @@ if __name__ == '__main__':
         res = sp.run(['gsutil', 'stat', model_dir + '/' + placeholder])
 
         if res.returncode == 0:
-            print('\n' + model_dir + 'exists')
+            print('\n' + model_dir + ' exists')
             continue
 
 
-        print('\n' + model_dir + 'does not exist, starting inference')
+        print('\n' + model_dir + ' does not exist, starting inference')
 
         sp.run(['touch', placeholder], check=True)
         sp.run(['gsutil', 'cp', placeholder, model_dir + '/'], check=True)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         resolutions = [model['resolution']]
 
         for img_res in resolutions:
-            model_name = model["version"] + '-' + model["dataset"] + '-' + img_res
+            model_name = model["version"] + '-' + model["dataset"] + '-' + str(img_res)
             gs_model_dir = gs_base_path + '/final/' + model_name
 
             dst_model_dir = 'models/' + model_name
