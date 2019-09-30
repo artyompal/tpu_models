@@ -24,13 +24,15 @@ if __name__ == '__main__':
         res = sp.run(['gsutil', 'stat', f'{model_dir}/{placeholder}'])
 
         if res.returncode == 0:
-            print(model_dir, 'exists')
-        else:
-            print(model_dir, 'does not exist, starting inference')
-            if not args.suppress_upload:
-                sp.run(['touch', placeholder], check=True)
-                sp.run(['gsutil', 'cp', placeholder, model_dir + '/'], check=True)
+            print(f'\n{model_dir} exists')
+            continue
 
+
+        print(f'\n{model_dir} does not exist, starting inference')
+
+        if not args.suppress_upload:
+            sp.run(['touch', placeholder], check=True)
+            sp.run(['gsutil', 'cp', placeholder, model_dir + '/'], check=True)
 
         resolutions = [model['resolution']]
 
