@@ -49,12 +49,13 @@ if __name__ == '__main__':
             os.makedirs('predictions', exist_ok=True)
             dst_predict = f'predictions/{model_name}.pkl'
 
+            CHECK = False
             if socket.gethostname() in ['cppg', 'devbox']:
                 sp.run(['./docker_run.sh', 'python', 'inference.py', dst_model_dir,
-                        '--destination', dst_predict], check=True)
+                        '--destination', dst_predict], check=CHECK)
             else:
                 sp.run([sys.executable, 'inference.py', dst_model_dir, '--destination', dst_predict],
-                       check=True)
+                       check=CHECK)
 
             if not os.path.exists(dst_predict):
                 dst_predict = '../' + dst_predict

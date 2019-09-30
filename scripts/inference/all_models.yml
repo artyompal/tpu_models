@@ -1,0 +1,189 @@
+
+# Balanced dataset
+
+- dataset: part_3
+  version: 3.0.2
+  step: 80000
+  resolution: 640
+
+
+# v2 dataset
+- dataset: v2_part_0
+  version: 2.0.4
+  step: 50000
+  resolution: 640
+- dataset: v2_part_1
+  version: 2.0.4
+  step: 60000
+  resolution: 640
+- dataset: v2_part_2
+  version: 2.0.4
+  step: 135000
+  resolution: 640
+- dataset: v2_part_3
+  version: 2.0.4
+  step: 150000
+  resolution: 640
+- dataset: v2_part_4
+  version: 2.0.4
+  step: 176300
+  resolution: 640
+
+
+# Human parts models
+
+- dataset: human_parts
+  version: 2.4.3
+  step: 16000
+  resolution: 640
+- dataset: human_parts
+  version: 2.4.4
+  step: 10000
+  resolution: 1024
+- dataset: human_parts
+  version: 2.4.8
+  step: 8000
+  resolution: 1024
+- dataset: human_parts
+  version: 2.4.8
+  step: 8000
+  resolution: 1024
+- dataset: human_parts
+  version: 2.5.4
+  step: 12000
+  resolution: 1024
+- dataset: human_parts
+  version: 2.5.5
+  step: 16000
+  resolution: 1024
+
+
+# Part 1 models
+
+- dataset: part_1
+  version: 2.6.0
+  step: 50000
+  resolution: 640
+- dataset: part_1
+  version: 2.6.6
+  step: 55000
+  resolution: 640
+
+
+# ResNet models in 1024
+
+- dataset: v2_part_3
+  version: 4.0.0
+  step: 145000
+  resolution: 1024
+
+- dataset: v2_part_4
+  version: 4.0.0
+  step: 120000
+  resolution: 1024
+
+- dataset: v2_part_4
+  version: 4.0.2
+  step: 90800
+  resolution: 1024
+
+
+# EfficientNet-b5 models
+
+- dataset: v2_part_4
+  version: 4.1.7
+  step: 84200
+  resolution: 1024
+
+- dataset: v2_part_4
+  version: 4.1.8
+  step: 94400
+  resolution: 1024
+
+- dataset: v2_part_4
+  version: 4.1.10
+  step: 82700
+  resolution: 1024
+
+
+
+# ResNetXXX models on part_2
+
+- dataset: part_2
+  version: 4.8.4
+  step: 115900
+  resolution: 1024
+
+- dataset: part_2
+  version: 4.8.5
+  step: 133400
+  resolution: 640
+
+- dataset: part_2
+  version: 4.8.6
+  step: 115000
+  resolution: 640
+
+- dataset: part_2
+  version: 4.8.8
+  step: 65000
+  resolution: 640
+
+# part_3
+
+- dataset: part_3
+  version: 4.8.5
+  step: 130000
+  resolution: 640
+
+- dataset: part_3
+  version: 4.8.9
+  step: 115000
+  resolution: 640
+
+
+# ResNetXXX models on part_0
+
+- dataset: v2_part_0
+  version: 4.9.0
+  step: 50000
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.1
+  step: 75000
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.3
+  step: 51500
+  resolution: 640
+
+- dataset: v2_part_0
+  version: 4.9.4
+  step: 53700
+  resolution: 640
+
+
+# part_1
+
+- dataset: v2_part_1
+  version: 4.9.0
+  step: 50000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.1
+  step: 80000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.2
+  step: 55000
+  resolution: 640
+
+- dataset: v2_part_1
+  version: 4.9.3
+  step: 56500
+  resolution: 640
+

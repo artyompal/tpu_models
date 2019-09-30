@@ -30,6 +30,8 @@ if __name__ == '__main__':
     print('model_dir', model_dir, 'dest_filename', dest_filename)
 
     tf.enable_eager_execution()
+    # print(tf.nn.swish(tf.multiply(2.0, 2.0)).numpy())
+    # print(tf.nn.swish(tf.random.uniform([256])).numpy())
     model = tf.saved_model.load_v2(model_dir, ['serve'])
 
     signature = model.signatures['serving_default']
