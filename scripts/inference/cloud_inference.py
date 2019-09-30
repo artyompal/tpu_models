@@ -20,15 +20,15 @@ if __name__ == '__main__':
     gs_base_path = 'gs://new_tpu_storage'
 
     for model in models:
-        model_dir = f'{gs_base_path}/predicts/{model["version"]}-{model["dataset"]}'
-        res = sp.run(['gsutil', 'stat', f'{model_dir}/{placeholder}'])
+        model_dir = gs_base_path + '/predicts/' + model["version"] + '-' + model["dataset"]
+        res = sp.run(['gsutil', 'stat', model_dir + '/' + placeholder])
 
         if res.returncode == 0:
-            print(f'\n{model_dir} exists')
+            print('\n' + model_dir + 'exists')
             continue
 
 
-        print(f'\n{model_dir} does not exist, starting inference')
+        print('\n' + model_dir + 'does not exist, starting inference')
 
         sp.run(['touch', placeholder], check=True)
         sp.run(['gsutil', 'cp', placeholder, model_dir + '/'], check=True)
@@ -36,18 +36,18 @@ if __name__ == '__main__':
         resolutions = [model['resolution']]
 
         for img_res in resolutions:
-            model_name = f'{model["version"]}-{model["dataset"]}-{img_res}'
-            gs_model_dir = f'{gs_base_path}/final/{model_name}'
+            model_name = model["version"] + '-' + model["dataset"] + '-' + img_res
+            gs_model_dir = gs_base_path + '/final/' + model_name
 
-            dst_model_dir = f'models/{model_name}'
+            dst_model_dir = 'models/' + model_name
 
             if not os.path.exists(dst_model_dir):
                 os.makedirs(dst_model_dir)
-                sp.run(['gsutil', '-m', 'cp', '-r', f'{gs_model_dir}/*', dst_model_dir],
+                sp.run(['gsutil', '-m', 'cp', '-r', gs_model_dir + '/*', dst_model_dir],
                        check=True)
 
             os.makedirs('predictions', exist_ok=True)
-            dst_predict = f'predictions/{model_name}.pkl'
+            dst_predict = 'predictions/' + model_name + '.pkl'
 
             CHECK = False
             if socket.gethostname() in ['cppg', 'devbox']:
