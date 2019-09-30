@@ -39,12 +39,12 @@ if __name__ == '__main__':
 
     data_dir = 'data/' if len(glob('data/*.csv')) else '../data/'
 
-    sample_submission_df = pd.read_csv(f'{data_dir}/OBJDET_sample_submission.csv')
+    sample_submission_df = pd.read_csv(data_dir + '/OBJDET_sample_submission.csv')
     image_ids = sample_submission_df['ImageId']
 
     predictions = []
     for image_id in tqdm(image_ids):
-        img_filename = f'{data_dir}/test/{image_id}.jpg'
+        img_filename = data_dir + '/test/' + image_id + '.jpg'
 
         with open(img_filename, 'rb') as f:
             data = f.read()
