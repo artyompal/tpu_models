@@ -1,0 +1,97 @@
+
+# Balanced dataset
+
+- dataset: part_3
+  version: 3.0.2
+  step: 80000
+
+
+# v2 dataset
+- dataset: v2_part_0
+  version: 2.0.4
+  step: 50000
+- dataset: v2_part_1
+  version: 2.0.4
+  step: 60000
+- dataset: v2_part_2
+  version: 2.0.4
+  step: 135000
+- dataset: v2_part_3
+  version: 2.0.4
+  step: 150000
+- dataset: v2_part_4
+  version: 2.0.4
+  step: 176300
+
+
+# Human parts models
+
+- dataset: human_parts
+  version: 2.4.3
+  step: 16000
+- dataset: human_parts
+  version: 2.4.4
+  step: 10000
+- dataset: human_parts
+  version: 2.4.8
+  step: 8000
+- dataset: human_parts
+  version: 2.4.8
+  step: 8000
+- dataset: human_parts
+  version: 2.5.4
+  step: 12000
+- dataset: human_parts
+  version: 2.5.5
+  step: 16000
+
+
+# Part 1 models
+
+- dataset: part_1
+  version: 2.6.0
+  step: 50000
+- dataset: part_1
+  version: 2.6.6
+  step: 55000
+
+
+# EfficientNet-b5 models
+
+- dataset: v2_part_3
+  version: 4.0.0
+  step: 145000
+
+- dataset: v2_part_4
+  version: 4.0.0
+  step: 120000
+
+- dataset: v2_part_4
+  version: 4.0.2
+  step: 90800
+
+- dataset: v2_part_4
+  version: 4.1.7
+  step: 84200
+
+- dataset: v2_part_4
+  version: 4.1.8
+  step: 94400
+
+- dataset: v2_part_4
+  version: 4.1.10
+  step: 82700
+
+
+# ResNetXXX models on part_2 / part_3
+
+- dataset: v2_part_2
+  version: 4.8.5
+  step: 133800
+
+
+# ResNetXXX models on part_0 / part_1
+
+- dataset: v2_part_0
+  version: 4.9.0
+  step: 50000
