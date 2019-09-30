@@ -31,10 +31,11 @@ def trim_line(threshold: float, s: str) -> str:
 
 if '__main__' == __name__:
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='force overwrite', action='store_true')
     parser.add_argument('result', help='result filename', type=str)
     parser.add_argument('filename', help='submission', type=str)
-    parser.add_argument('max_num', help='maximum number of predictions', type=int)
+    parser.add_argument('--max_num', help='maximum number of predictions', type=int,
+                        default=150 * 10**6)
+    parser.add_argument('-f', help='force overwrite', action='store_true')
     args = parser.parse_args()
     print(args)
 
