@@ -12,6 +12,10 @@ if __name__ == '__main__':
     with open(args.models_yaml) as f:
         models = yaml.load(f, Loader=yaml.SafeLoader)
 
-    for model in models:
-        subprocess.run(['./export_saved_model.sh', model['dataset'], model['version'],
-                        str(model['step'])])
+    for res in [640, 800, 1024]:
+        for model in models:
+            subprocess.run(['./export_saved_model.sh',
+                            model['dataset'],
+                            model['version'],
+                            str(model['step']),
+                            str(res)])

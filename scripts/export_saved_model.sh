@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ]; then
-    echo "usage: $0 dataset_code config_version step"
+if [ "$#" -ne 4 ]; then
+    echo "usage: $0 dataset_code config_version step resolution"
     exit
 fi
 
@@ -11,6 +11,7 @@ set -e
 PART=$1
 VERSION=$2
 STEP=$3
+RES=$4
 
 PYTHONPATH=$HOME/tpu_models/models
 
@@ -37,7 +38,7 @@ NUM_CLASSES=$(cat $LOCAL_VAL_JSON_FILE | grep name | wc -l)
 
 python ../models/official/detection/export_saved_model.py \
     --checkpoint_path $CHECKPOINT_PATH \
-    --output_normalized_coordinates=True --export_dir $STORAGE_BUCKET/final/$VERSION-$PART/ \
+    --output_normalized_coordinates=True --export_dir $STORAGE_BUCKET/final/$VERSION-$PART-$RES/ \
     --params_override="{
         retinanet_head: {
             num_classes: $NUM_CLASSES,
@@ -47,6 +48,9 @@ python ../models/official/detection/export_saved_model.py \
         },
         postprocess: {
             num_classes: $NUM_CLASSES,
+        },
+        retinanet_parser: {
+            output_size: [$RES, $RES]
         }
     }" \
     --config_file `find ../models/official/detection/configs/yaml/ -name $VERSION*.yaml`
