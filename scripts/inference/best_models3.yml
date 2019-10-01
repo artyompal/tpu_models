@@ -1,75 +1,75 @@
 
 
-# ResNetXXX models on part_2
-
-- dataset: part_2
-  version: 4.8.9
-  step: 60000
-  resolution: 640
-
-- dataset: part_2
+# # ResNetXXX models on part_2
+#
+# - dataset: part_2
+#   version: 4.8.9
+#   step: 60000
+#   resolution: 640
+#
+- dataset: v2_part_2
   version: 4.8.10
   step: 100000
   resolution: 1024
 
-- dataset: part_2
+- dataset: v2_part_2
   version: 4.8.12
   step: 55000
   resolution: 800
 
 
-# part_3
-
-- dataset: part_3
-  version: 4.8.4
-  step: 125000
-  resolution: 1024
-
-- dataset: part_3
-  version: 4.8.6
-  step: 255000
-  resolution: 640
-
-- dataset: part_3
-  version: 4.8.8
-  step: 125000
-  resolution: 640
-
-- dataset: part_3
-  version: 4.8.10
-  step: 185000
-  resolution: 1024
-
-- dataset: part_3
-  version: 4.8.12
-  step: 120000
-  resolution: 800
+# # part_3
+#
+# - dataset: part_3
+#   version: 4.8.4
+#   step: 125000
+#   resolution: 1024
+#
+# - dataset: part_3
+#   version: 4.8.6
+#   step: 255000
+#   resolution: 640
+#
+# - dataset: part_3
+#   version: 4.8.8
+#   step: 125000
+#   resolution: 640
+#
+# - dataset: part_3
+#   version: 4.8.10
+#   step: 185000
+#   resolution: 1024
+#
+# - dataset: part_3
+#   version: 4.8.12
+#   step: 120000
+#   resolution: 800
 
 
 # part_4
 
-- dataset: part_4
+- dataset: v2_part_4
   version: 4.8.8
   step: 110000
   resolution: 640
 
-- dataset: part_4
+- dataset: v2_part_4
   version: 4.8.9
   step: 117100
   resolution: 640
 
 
-# ResNetXXX models on part_0
-
-- dataset: v2_part_0
-  version: 4.9.2
-  step: 113700
-  resolution: 640
-
-
-# part_1
-
-- dataset: v2_part_1
-  version: 4.9.4
-  step: 113700
-  resolution: 640
+# # ResNetXXX models on part_0
+#
+# - dataset: v2_part_0
+#   version: 4.9.2
+#   step: 113700
+#   resolution: 640
+#
+#
+# # part_1
+#
+# - dataset: v2_part_1
+#   version: 4.9.4
+#   step: 113700
+#   resolution: 640
