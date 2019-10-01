@@ -48,9 +48,9 @@ if __name__ == '__main__':
     part_size = image_ids.shape[0] // args.num_parts
 
     if args.part_idx != args.num_parts - 1:
-        images_ids = image_ids.iloc[args.part_idx * part_size : (args.part_idx + 1) * part_size]
+        image_ids = image_ids.iloc[args.part_idx * part_size : (args.part_idx + 1) * part_size]
     else:
-        images_ids = image_ids.iloc[args.part_idx * part_size :]
+        image_ids = image_ids.iloc[args.part_idx * part_size :]
 
 
     predictions = []
