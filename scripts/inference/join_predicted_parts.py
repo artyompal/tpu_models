@@ -31,5 +31,7 @@ if '__main__' == __name__:
             part_pred = pickle.load(f)
             all_predictions.extend(part_pred)
 
+    assert len(all_predictions) == 99999
+    
     with open(args.result, 'wb') as f:
         pickle.dump(all_predictions, f)
