@@ -20,7 +20,8 @@ if __name__ == '__main__':
     gs_base_path = 'gs://new_tpu_storage'
 
     for model in models:
-        model_dir = gs_base_path + '/predicts/' + model["version"] + '-' + model["dataset"]
+        model_dir = gs_base_path + '/predicts/' + model["version"] + '-' + model["dataset"] + '-' \
+                  + str(model['resolution'])
         res = sp.run(['gsutil', 'stat', model_dir + '/' + placeholder])
 
         if res.returncode == 0:
