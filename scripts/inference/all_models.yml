@@ -44,14 +44,14 @@
   version: 2.4.8
   step: 8000
   resolution: 1024
-- dataset: human_parts
-  version: 2.5.4
-  step: 12000
-  resolution: 1024
-- dataset: human_parts
-  version: 2.5.5
-  step: 16000
-  resolution: 1024
+# - dataset: human_parts
+#   version: 2.5.4
+#   step: 12000
+#   resolution: 1024
+# - dataset: human_parts
+#   version: 2.5.5
+#   step: 16000
+#   resolution: 1024
 
 
 # Part 1 models
@@ -85,17 +85,17 @@
 
 
 # # EfficientNet-b5 models
-# 
+#
 # - dataset: v2_part_4
 #   version: 4.1.7
 #   step: 84200
 #   resolution: 1024
-# 
+#
 # - dataset: v2_part_4
 #   version: 4.1.8
 #   step: 94400
 #   resolution: 1024
-# 
+#
 # - dataset: v2_part_4
 #   version: 4.1.10
 #   step: 82700
