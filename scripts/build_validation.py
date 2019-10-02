@@ -20,7 +20,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
-    blacklist = [os.path.splitext(os.path.basename(f))[0] for f in glob('data/blacklist/*.jpg')]
+    with open('blacklist.txt') as f:
+        blacklist = [os.path.splitext(name)[0] for name in f]
 
     classes_df = pd.read_csv(args.classes, header=None, names=['classes', 'names'])
     classes = classes_df.classes.values
@@ -58,8 +59,8 @@ if __name__ == '__main__':
     if args.viz_directory:
         os.makedirs(args.viz_directory, exist_ok=True)
 
-        for f in glob(args.viz_directory + '/*.jpg'):
-            os.remove(f)
+        for img_file in glob(args.viz_directory + '/*.jpg'):
+            os.remove(img_file)
 
         for label_name, label_df in df.groupby('LabelName'):
             for image_id in label_df.ImageID.unique():
