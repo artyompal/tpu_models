@@ -5,8 +5,8 @@ do
     echo "========================================================================"
     echo processing $PART
 
-    gsutil -m cp output/balanced_train_$PART*.tfrecord gs://new_tpu_storage/converted/$PART/
-    rm output/balanced_train_$PART*.tfrecord 
+    gsutil -m cp output/train_$PART*.tfrecord gs://new_tpu_storage/converted/$PART/
+    rm output/train_$PART*.tfrecord 
 
     gsutil -m cp output/val_$PART*.tfrecord gs://new_tpu_storage/converted/$PART/
     rm output/val_$PART*.tfrecord 
