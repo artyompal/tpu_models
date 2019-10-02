@@ -31,14 +31,14 @@ cd scripts/
 
 Then I build TFRecord files and upload them to GCS. Replace links to `gs://new_tpu_storage/` with the link to your very own GSC storage and run this:
 ```
-prepare_tfrecords_v1.sh
-upload_files_to_gcs.sh 
+./prepare_tfrecords_v1.sh
+./upload_files_to_gcs.sh 
 ```
 
 
 ### Create an instance
 
-Open the Cloud Console in your Google Cloud Project webpage and use the `ctpu` tool to provision instances with TPU:
+Open the Cloud Console in your Google Cloud Project webpage and use the `ctpu` tool to create cloud instances with TPUs:
 ```
 gcloud config set project $YOUR_TPU_PROJECT_ID
 
