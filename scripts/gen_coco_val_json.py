@@ -71,14 +71,6 @@ if __name__ == '__main__':
     annotations = []
 
     for i, row in enumerate(tqdm(df.itertuples(), total=df.shape[0])):
-        # for i, row in enumerate(instances_df.itertuples()):
-        #     bboxes.append(np.array([
-        #         row.XMin * img.width,
-        #         row.YMin * img.height,
-        #         row.XMax * img.width,
-        #         row.YMax * img.height]))
-        #     labels.append(classes_table[row.LabelName])
-
         image = images[row.ImageID]
         x = int(row.XMin * image['width'])
         y = int(row.YMin * image['height'])
