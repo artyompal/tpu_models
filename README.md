@@ -1,8 +1,17 @@
+# TPU models for Open Images 2019 Object Detection Challenge | Kaggle
+
+### How-to
+
+To get used with TPUs, I recommend these tutorials:
+* https://cloud.google.com/tpu/docs/tutorials/resnet for image classification;
+* https://cloud.google.com/tpu/docs/tutorials/retinanet for object detection;
+* https://cloud.google.com/tpu/docs/tutorials/mask-rcnn for instance segmentation.
 
 ### Create an instance
 
 ```
 gcloud config set project $YOUR_TPU_PROJECT_ID
+
 and then one of:
 ctpu up --tpu-size=v3-8 --machine-type n1-standard-4 --zone ZONE --name TPU_NAME
 or:
@@ -12,14 +21,14 @@ ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2 --zone ZONE --name TPU_NAME 
 or when you TPU has been preempted and you need a new one:
 ctpu up --tpu-size=v2-8 --zone ZONE --name TPU_NAME --preemptible --tpu-only --noconf
 
-# optional: open the port for TensorBoard
+optional: open the port for TensorBoard
 gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=TPU_NAME --source-ranges=0.0.0.0/0
 ```
 
 
 ### My way of configuring an instance
 
-```
+```bash
 sudo apt install -y mc htop python-tk
 
 echo export PYTHONPATH=$HOME/tpu_models/models >>~/.bashrc
@@ -44,12 +53,12 @@ cd tpu_models/scripts/
 ### Train a model
 
 SSH into an instance:
-```
+```bash
 gcloud beta compute --project YOUR_TPU_PROJECT_ID ssh --zone YOU_ZONE TPU_NAME
 ```
 
 And then:
-```
+```bash
 cd tpu_models/scripts/
 git pull
 ./train_on_dataset.sh DATASET_PART VERSION
@@ -60,7 +69,7 @@ or
 
 ### Debug TensorFlow model
 
-```
+```python
 def restore_from_checkpoint(self):
   print([n.name for n in tf.get_default_graph().as_graph_def().node])
 
@@ -74,35 +83,45 @@ chkp.print_tensors_in_checkpoint_file('/tmp/model.ckpt', tensor_name='', all_ten
 
 ### Monitor training
 
-```
+```bash
+# print all AP50 scores
 cat training.log | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+
+# take the freshest log file from the current directory
 cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+|Restoring.*)' | uniq
+
+# take the freshest log file and print the best score
 cat `ls -ct1 | head -n 1` | grep -oE '(.AP50.:[ .0-9]+)' | uniq | sort -r | head -n 1
 ```
 
 
 ### Export a model
 
-```
+```bash
 ./export_saved_model.sh PART VERSION STEP
 ```
 
 
 ### Infer predictions
 
-```
+```bash
 CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python inference.py PREDICTIONS.PKL MODEL_DIR
 ```
 
 ### Training ImageNet
 
-```
-export DEPTH=101
+```bash
+export DEPTH=101 # 50, 101, 152, 200
 python resnet_main.py --tpu=$HOSTNAME --data_dir=GS_SOURCE_STORAGE \
     --model_dir=GS_DESTINATION_STORAGE --resnet_depth=$DEPTH \
     --config_file=configs/resnet$DEPTH.yaml 2>&1 | tee -a ~/resnet$DEPTH.log
 
-cat resnet152.log | grep 'Saving dict' | grep -v INFO
-cat resnet200.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19- | sort -r | head
-cat resnet200.log | grep `cat resnet200.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19 | sort -r | head -n 1` | grep Saving | grep INFO
+# print all validation results
+cat resnet$DEPTH.log | grep 'Saving dict' | grep -v INFO
+
+# print the best validation scores
+cat resnet$DEPTH.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19- | sort -r | head
+
+# print the best validation score with step number
+cat resnet$DEPTH.log | grep `cat resnet$DEPTH.log | grep 'Saving dict' | grep -v INFO | cut -d' ' -f 19 | sort -r | head -n 1` | grep Saving | grep INFO
 ```
