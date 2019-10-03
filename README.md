@@ -2,7 +2,7 @@
 
 ### How-to
 
-To get used with TPUs, I recommend these tutorials:
+I recommend these tutorials to get started with TPUS:
 * https://cloud.google.com/tpu/docs/tutorials/resnet for image classification;
 * https://cloud.google.com/tpu/docs/tutorials/retinanet for object detection;
 * https://cloud.google.com/tpu/docs/tutorials/mask-rcnn for instance segmentation.
