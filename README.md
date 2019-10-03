@@ -48,7 +48,7 @@ or:
 ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2  --zone ZONE --name TPU_NAME
 or:
 ctpu up --tpu-size=v2-8 --machine-type n1-highmem-2 --zone ZONE --name TPU_NAME --preemptible
-or when you TPU has been preempted and you need a new one:
+or when your TPU has been preempted and you need a new one:
 ctpu up --tpu-size=v2-8 --zone ZONE --name TPU_NAME --preemptible --tpu-only --noconf
 
 optional: open the port for TensorBoard
@@ -60,7 +60,7 @@ gcloud compute firewall-rules create tensorboard --allow tcp:6006 --source-tags=
 
 SSH into an instance:
 ```bash
-gcloud beta compute --project YOUR_TPU_PROJECT_ID ssh --zone YOU_ZONE TPU_NAME
+gcloud beta compute --project YOUR_TPU_PROJECT_ID ssh --zone YOUR_ZONE TPU_NAME
 ```
 
 And then:
@@ -82,7 +82,7 @@ Saved models are in TPU-specific format. You can export them into a device-indep
 
 ### Infer predictions
 
-When you have downloaded you model from the cloud, you can run the inference on your GPU like this. I use Docker to take care of TensorFlow and CUDA, but it's not necessary:
+When you have downloaded your model from the cloud, you can run the inference on your GPU like this. I use Docker to take care of TensorFlow and CUDA, but it's not necessary:
 ```bash
 ./docker_run.sh python inference.py PREDICTIONS.PKL MODEL_DIR
 ```
