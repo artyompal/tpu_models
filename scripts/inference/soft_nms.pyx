@@ -1,3 +1,9 @@
+# ----------------------------------------------------------
+# Soft-NMS: Improving Object Detection With One Line of Code
+# Copyright (c) University of Maryland, College Park
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Navaneeth Bodla and Bharat Singh
+# ----------------------------------------------------------
 
 import numpy as np
 cimport numpy as np
@@ -158,5 +164,4 @@ def cpu_soft_nms(np.ndarray[float, ndim=2] boxes, float sigma, float Nt, float t
 
             pos = pos + 1
 
-    #keep = [i for i in range(N)]
-    return boxes[:N,:] #keep,
+    return boxes[:N,:]
