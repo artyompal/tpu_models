@@ -2,7 +2,7 @@
 
 ### How-to
 
-I recommend these tutorials to get started with TPUS:
+I recommend these tutorials to get started with TPUs:
 * https://cloud.google.com/tpu/docs/tutorials/resnet for image classification;
 * https://cloud.google.com/tpu/docs/tutorials/retinanet for object detection;
 * https://cloud.google.com/tpu/docs/tutorials/mask-rcnn for instance segmentation.
@@ -149,7 +149,7 @@ chkp.print_tensors_in_checkpoint_file(CHECKPOINT_PATH, tensor_name='', all_tenso
 
 ### Monitor training
 
-Using TensorBoard for 10+ instances is pain, so I use Bash scripting with some grepping:
+Using TensorBoard for 10+ instances is a pain, so I use Bash scripting with some grepping:
 
 ```bash
 # print all AP50 scores
